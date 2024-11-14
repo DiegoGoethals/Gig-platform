@@ -5,6 +5,7 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Gig_Platform</RootNamespace>
+    <UserSecretsId>edfbb913-ccc8-47a0-986b-038ca0fe31e5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +15,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Dtos\" />
   </ItemGroup>
 
   <ItemGroup>
