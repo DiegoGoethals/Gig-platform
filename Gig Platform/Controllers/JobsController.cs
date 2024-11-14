@@ -174,8 +174,7 @@ namespace Gig_Platform.Controllers
                         Id = application.Id,
                         CandidateId = application.CandidateId,
                         CandidateName = application.Candidate.UserName,
-                        ApplicationStatus = application.Status.Name,
-                        Salary = application.Salary
+                        ApplicationStatus = application.Status.Name
                     }).ToList(),
                     Skills = job.Skills.Select(skill => new SkillResponseDto
                     {

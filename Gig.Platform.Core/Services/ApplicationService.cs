@@ -23,7 +23,7 @@ namespace Gig.Platform.Core.Services
             _applicationStatusRepository = applicationStatusRepository;
         }
 
-        public async Task<ResultModel<Application>> CreateAsync(Guid jobId, Guid candidateId, double salary)
+        public async Task<ResultModel<Application>> CreateAsync(Guid jobId, Guid candidateId)
         {
             var job = await _jobRepository.GetByIdAsync(jobId);
             if (job == null)
@@ -137,7 +137,7 @@ namespace Gig.Platform.Core.Services
             };
         }
 
-        public async Task<ResultModel<Application>> UpdateAsync(Guid id, double salary)
+        public async Task<ResultModel<Application>> UpdateAsync(Guid id)
         {
             var application = await _applicationRepository.GetByIdAsync(id);
             if (application == null)

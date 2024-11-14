@@ -30,7 +30,7 @@ namespace Gig_Platform.Controllers
         [Authorize(Policy = "Employee")]
         public async Task<IActionResult> Create(ApplicationRequestDto applicationRequestDto)
         {
-            var result = await _applicationService.CreateAsync(applicationRequestDto.JobId, applicationRequestDto.CandidateId, applicationRequestDto.Salary);
+            var result = await _applicationService.CreateAsync(applicationRequestDto.JobId, applicationRequestDto.CandidateId);
             if (result.IsSucces)
             {
                 return CreatedAtAction(nameof(Create), new { result.Value.Id }, new ApplicationResponseDto
@@ -115,7 +115,7 @@ namespace Gig_Platform.Controllers
         [Authorize(Policy = "Employee")]
         public async Task<IActionResult> Update(Guid id, ApplicationRequestDto applicationRequestDto)
         {
-            var result = await _applicationService.UpdateAsync(id, applicationRequestDto.Salary);
+            var result = await _applicationService.UpdateAsync(id);
             if (result.IsSucces)
             {
                 return Ok(new ApplicationResponseDto
