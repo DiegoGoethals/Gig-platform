@@ -3,11 +3,6 @@ using Gig.Platform.Core.Interfaces.Repositories;
 using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gig.Platform.Core.Services
 {
@@ -22,7 +17,7 @@ namespace Gig.Platform.Core.Services
             _skillRepository = skillRepository;
         }
 
-        public async Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills)
+        public async Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills, double latitude, double longitude, string streetName, string houseNumber, string postalCode, string city)
         {
             var job = new Job
             {
@@ -31,7 +26,13 @@ namespace Gig.Platform.Core.Services
                 Description = description,
                 Salary = salary,
                 EmployerId = employerId,
-                Skills = new List<Skill>()
+                Skills = new List<Skill>(),
+                Latitude = latitude,
+                Longitude = longitude,
+                StreetName = streetName,
+                HouseNumber = houseNumber,
+                PostalCode = postalCode,
+                City = city
             };
 
             foreach (var skillName in skills)
@@ -108,7 +109,7 @@ namespace Gig.Platform.Core.Services
             var filteredJobs = jobsWithSkills
                 .Where(job => job.Skills != null && job.Skills.Any(s => skills.Contains(s.Name)))
                 .ToList();
-            if (filteredJobs.Any())
+            if (filteredJobs.Count != 0)
             {
                 return new ResultModel<IEnumerable<Job>>
                 {
@@ -201,6 +202,24 @@ namespace Gig.Platform.Core.Services
                 {
                     "No jobs found for this employer"
                 }
+            };
+        }
+
+        public async Task<ResultModel<IEnumerable<Job>>> GetAllByDistance(double latitude, double longitude, double distance)
+        {
+            var jobs = await _jobRepository.GetJobsByDistance(latitude, longitude, distance);
+            if (jobs != null)
+            {
+                return new ResultModel<IEnumerable<Job>>
+                {
+                    IsSucces = true,
+                    Value = jobs.Any() ? jobs : new List<Job>()
+                };
+            }
+            return new ResultModel<IEnumerable<Job>>
+            {
+                IsSucces = true,
+                Value = new List<Job>()
             };
         }
     }

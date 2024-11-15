@@ -15,5 +15,11 @@ namespace Gig.Platform.Core.Entities
         public ApplicationUser Employer { get; set; }
         public ICollection<Application> Applications { get; set; }
         public ICollection<Skill> Skills { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        public string StreetName { get; set; }
+        public string HouseNumber { get; set; }
+        public string PostalCode { get; set; }
+        public string City { get; set; }
     }
 }

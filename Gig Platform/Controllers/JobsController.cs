@@ -1,4 +1,5 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
+using Gig.Platform.Core.Services;
 using Gig_Platform.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +12,12 @@ namespace Gig_Platform.Controllers
     public class JobsController : ControllerBase
     {
         private readonly IJobService _jobService;
+        private readonly GeocodingService _geocodingService;
 
-        public JobsController(IJobService jobService)
+        public JobsController(IJobService jobService, GeocodingService geocodingService)
         {
             _jobService = jobService;
+            _geocodingService = geocodingService;
         }
 
         private IActionResult HandleError(IEnumerable<string> errors)
@@ -30,7 +33,61 @@ namespace Gig_Platform.Controllers
         [Authorize(Policy = "Employer")]
         public async Task<IActionResult> Create(JobRequestDto jobRequestDto)
         {
-            var result = await _jobService.CreateAsync(jobRequestDto.Name, jobRequestDto.Description, jobRequestDto.Salary, jobRequestDto.EmployerId, jobRequestDto.Skills);
+            if (jobRequestDto.Latitude == null || jobRequestDto.Longitude == null)
+            {
+                var (latitude, longitude) = await _geocodingService.GeocodeAddressAsync(
+                    jobRequestDto.StreetName,
+                    jobRequestDto.HouseNumber,
+                    jobRequestDto.PostalCode,
+                    jobRequestDto.City
+                );
+
+                if (latitude == null || longitude == null)
+                {
+                    return BadRequest("Unable to geocode the provided address.");
+                }
+
+                jobRequestDto.Latitude = (double)latitude;
+                jobRequestDto.Longitude = (double)longitude;
+            }
+
+            else if (string.IsNullOrWhiteSpace(jobRequestDto.StreetName) || string.IsNullOrWhiteSpace(jobRequestDto.City))
+            {
+                var geocodedAddress = await _geocodingService.ReverseGeocodeAsync(jobRequestDto.Latitude.Value, jobRequestDto.Longitude.Value);
+
+                if (geocodedAddress == null)
+                {
+                    return BadRequest("Unable to reverse geocode the provided coordinates.");
+                }
+
+                jobRequestDto.StreetName = geocodedAddress.StreetName;
+                jobRequestDto.HouseNumber = geocodedAddress.HouseNumber;
+                jobRequestDto.PostalCode = geocodedAddress.PostalCode;
+                jobRequestDto.City = geocodedAddress.City;
+
+                // Validate extracted fields
+                if (string.IsNullOrWhiteSpace(jobRequestDto.StreetName) ||
+                        string.IsNullOrWhiteSpace(jobRequestDto.PostalCode) ||
+                        string.IsNullOrWhiteSpace(jobRequestDto.City))
+                {
+                    return BadRequest("Insufficient address details from reverse geocoding.");
+                }
+            }
+
+            var result = await _jobService.CreateAsync(
+                jobRequestDto.Name,
+                jobRequestDto.Description,
+                jobRequestDto.Salary,
+                jobRequestDto.EmployerId,
+                jobRequestDto.Skills,
+                jobRequestDto.Latitude.Value,
+                jobRequestDto.Longitude.Value,
+                jobRequestDto.StreetName,
+                jobRequestDto.HouseNumber,
+                jobRequestDto.PostalCode,
+                jobRequestDto.City
+            );
+
             if (result.IsSucces)
             {
                 return CreatedAtAction(nameof(Create), new { result.Value.Id }, new JobResponseDto
@@ -44,7 +101,13 @@ namespace Gig_Platform.Controllers
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList()
+                    }).ToList(),
+                    Latitude = result.Value.Latitude,
+                    Longitude = result.Value.Longitude,
+                    StreetName = result.Value.StreetName,
+                    HouseNumber = result.Value.HouseNumber,
+                    PostalCode = result.Value.PostalCode,
+                    City = result.Value.City
                 });
             }
             return HandleError(result.Errors);
@@ -181,6 +244,35 @@ namespace Gig_Platform.Controllers
                         Id = skill.Id,
                         Name = skill.Name
                     }).ToList()
+                }));
+            }
+            return HandleError(result.Errors);
+        }
+
+        [HttpGet("distance/{latitude}/{longitude}/{distance}")]
+        public async Task<IActionResult> GetAllByDistance(double latitude, double longitude, double distance)
+        {
+            var result = await _jobService.GetAllByDistance(latitude, longitude, distance);
+            if (result.IsSucces)
+            {
+                return Ok(result.Value.Select(job => new JobResponseDto
+                {
+                    Id = job.Id,
+                    Name = job.Name,
+                    Description = job.Description,
+                    Salary = job.Salary,
+                    EmployerId = job.EmployerId,
+                    Skills = job.Skills.Select(skill => new SkillResponseDto
+                    {
+                        Id = skill.Id,
+                        Name = skill.Name
+                    }).ToList(),
+                    Latitude = job.Latitude,
+                    Longitude = job.Longitude,
+                    StreetName = job.StreetName,
+                    HouseNumber = job.HouseNumber,
+                    PostalCode = job.PostalCode,
+                    City = job.City
                 }));
             }
             return HandleError(result.Errors);
