@@ -3,11 +3,6 @@ using Gig.Platform.Core.Interfaces.Repositories;
 using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gig.Platform.Core.Services
 {
@@ -22,7 +17,7 @@ namespace Gig.Platform.Core.Services
             _skillRepository = skillRepository;
         }
 
-        public async Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills)
+        public async Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills, double latitude, double longitude, string streetName, string houseNumber, string postalCode, string city)
         {
             var job = new Job
             {
@@ -31,7 +26,13 @@ namespace Gig.Platform.Core.Services
                 Description = description,
                 Salary = salary,
                 EmployerId = employerId,
-                Skills = new List<Skill>()
+                Skills = new List<Skill>(),
+                Latitude = latitude,
+                Longitude = longitude,
+                StreetName = streetName,
+                HouseNumber = houseNumber,
+                PostalCode = postalCode,
+                City = city
             };
 
             foreach (var skillName in skills)

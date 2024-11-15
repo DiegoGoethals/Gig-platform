@@ -73,6 +73,7 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddTransient<Gig.Platform.Core.Interfaces.Services.IMailService, Gig.Platform.Core.Services.MailService>();
+builder.Services.AddHttpClient<GeocodingService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

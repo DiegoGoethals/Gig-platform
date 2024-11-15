@@ -10,7 +10,7 @@ namespace Gig.Platform.Core.Interfaces.Services
 {
     public interface IJobService
     {
-        Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills);
+        Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills, double latitude, double longitude, string streetName, string houseNumber, string postalCode, string city);
         Task<ResultModel<Job>> DeleteAsync(Guid id);
         Task<ResultModel<IEnumerable<Job>>> GetAllAsync();
         Task<ResultModel<IEnumerable<Job>>> GetBySkills(IEnumerable<string> skills);

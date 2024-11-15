@@ -9,5 +9,11 @@
         public Guid EmployerId { get; set; }
         public ICollection<ApplicationResponseDto> Applications { get; set; }
         public ICollection<SkillResponseDto> Skills { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
+        public string StreetName { get; set; }
+        public string HouseNumber { get; set; }
+        public string PostalCode { get; set; }
+        public string City { get; set; }
     }
 }
