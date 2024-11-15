@@ -109,7 +109,7 @@ namespace Gig.Platform.Core.Services
             var filteredJobs = jobsWithSkills
                 .Where(job => job.Skills != null && job.Skills.Any(s => skills.Contains(s.Name)))
                 .ToList();
-            if (filteredJobs.Any())
+            if (filteredJobs.Count != 0)
             {
                 return new ResultModel<IEnumerable<Job>>
                 {
@@ -202,6 +202,24 @@ namespace Gig.Platform.Core.Services
                 {
                     "No jobs found for this employer"
                 }
+            };
+        }
+
+        public async Task<ResultModel<IEnumerable<Job>>> GetAllByDistance(double latitude, double longitude, double distance)
+        {
+            var jobs = await _jobRepository.GetJobsByDistance(latitude, longitude, distance);
+            if (jobs != null)
+            {
+                return new ResultModel<IEnumerable<Job>>
+                {
+                    IsSucces = true,
+                    Value = jobs.Any() ? jobs : new List<Job>()
+                };
+            }
+            return new ResultModel<IEnumerable<Job>>
+            {
+                IsSucces = true,
+                Value = new List<Job>()
             };
         }
     }

@@ -53,7 +53,7 @@ namespace Gig_Platform.Controllers
 
             else if (string.IsNullOrWhiteSpace(jobRequestDto.StreetName) || string.IsNullOrWhiteSpace(jobRequestDto.City))
             {
-                var geocodedAddress = await _geocodingService.ReverseGeocodeAsync(jobRequestDto.Latitude, jobRequestDto.Longitude);
+                var geocodedAddress = await _geocodingService.ReverseGeocodeAsync(jobRequestDto.Latitude.Value, jobRequestDto.Longitude.Value);
 
                 if (geocodedAddress == null)
                 {
@@ -80,8 +80,8 @@ namespace Gig_Platform.Controllers
                 jobRequestDto.Salary,
                 jobRequestDto.EmployerId,
                 jobRequestDto.Skills,
-                jobRequestDto.Latitude,
-                jobRequestDto.Longitude,
+                jobRequestDto.Latitude.Value,
+                jobRequestDto.Longitude.Value,
                 jobRequestDto.StreetName,
                 jobRequestDto.HouseNumber,
                 jobRequestDto.PostalCode,
@@ -244,6 +244,35 @@ namespace Gig_Platform.Controllers
                         Id = skill.Id,
                         Name = skill.Name
                     }).ToList()
+                }));
+            }
+            return HandleError(result.Errors);
+        }
+
+        [HttpGet("distance/{latitude}/{longitude}/{distance}")]
+        public async Task<IActionResult> GetAllByDistance(double latitude, double longitude, double distance)
+        {
+            var result = await _jobService.GetAllByDistance(latitude, longitude, distance);
+            if (result.IsSucces)
+            {
+                return Ok(result.Value.Select(job => new JobResponseDto
+                {
+                    Id = job.Id,
+                    Name = job.Name,
+                    Description = job.Description,
+                    Salary = job.Salary,
+                    EmployerId = job.EmployerId,
+                    Skills = job.Skills.Select(skill => new SkillResponseDto
+                    {
+                        Id = skill.Id,
+                        Name = skill.Name
+                    }).ToList(),
+                    Latitude = job.Latitude,
+                    Longitude = job.Longitude,
+                    StreetName = job.StreetName,
+                    HouseNumber = job.HouseNumber,
+                    PostalCode = job.PostalCode,
+                    City = job.City
                 }));
             }
             return HandleError(result.Errors);
