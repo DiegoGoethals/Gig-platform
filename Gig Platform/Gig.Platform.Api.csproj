@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Gig.Platform.Infrastructure\Gig.Platform.Infrastructure.csproj" />
+    <ProjectReference Include="..\Gig.Platform.Shared\Gig.Platform.Shared.csproj" />
   </ItemGroup>
 
 </Project>

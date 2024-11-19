@@ -1,5 +1,4 @@
-﻿using Gig.Platform.Core.Entities;
-using Gig.Platform.Core.Services.Models;
+﻿using Gig.Platform.Core.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

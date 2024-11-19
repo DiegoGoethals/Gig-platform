@@ -1,5 +1,4 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
-using Gig_Platform.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

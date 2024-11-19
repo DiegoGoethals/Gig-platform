@@ -37,7 +37,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.ToTable("ApplicationUserSkill");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Application", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Application", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.ApplicationStatus", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.ApplicationStatus", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,6 +79,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated")
@@ -87,9 +88,32 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ApplicationStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9361879f-76c1-4679-88b5-e0448a7d59dc"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Pending",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("7baaaf33-af00-48a1-840d-62d463fb00fe"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Approved",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("d6339d8b-95ff-49c4-8052-fb799c91ea92"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Rejected",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,10 +140,12 @@ namespace Gig.Platform.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Firstname")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Lastname")
+                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -172,25 +198,28 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Job", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Job", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("EmployerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("HouseNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Latitude")
@@ -200,16 +229,19 @@ namespace Gig.Platform.Infrastructure.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Salary")
                         .HasColumnType("float");
 
                     b.Property<string>("StreetName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated")
@@ -222,13 +254,14 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Message", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created")
@@ -252,13 +285,14 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Review", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Review", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created")
@@ -285,7 +319,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Skill", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Skill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,6 +329,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated")
@@ -303,6 +338,64 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5a278e06-b45e-4e47-a820-a4fb9b98d7fe"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Tech Assistance",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("efd01481-6451-4b21-8fcb-cf231b15ffb7"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Home Services",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("05a3582c-a1ce-4e3c-a7e2-806a51d45bf0"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Tutoring",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("fab5438d-7a97-497a-ae3d-e9bf6d36feb8"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Transportation & Delivery",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("d3a3d510-30e1-46b8-87fa-bfc606d769fa"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Personal Care",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("ae17fd7a-f75d-4401-b6d9-eba594c4282d"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Event Assistance",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("abd5cd8e-21bf-4f44-b27b-11951f96d62c"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Outdoor Services",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("9fa3aabc-0185-45b4-85c1-1db0e362a407"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Miscellaneous",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("JobSkill", b =>
@@ -346,6 +439,20 @@ namespace Gig.Platform.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cbd07a4f-fefc-454b-a2db-4d8bb374be3f"),
+                            Name = "Employer",
+                            NormalizedName = "EMPLOYER"
+                        },
+                        new
+                        {
+                            Id = new Guid("5bcc6eef-f962-4b23-812d-adc8c332cd12"),
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -453,34 +560,34 @@ namespace Gig.Platform.Infrastructure.Migrations
 
             modelBuilder.Entity("ApplicationUserSkill", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.Skill", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.Skill", null)
                         .WithMany()
                         .HasForeignKey("SkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Application", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Application", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", "Candidate")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", "Candidate")
                         .WithMany("Applications")
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.Job", "Job")
+                    b.HasOne("Gig.Platform.Shared.Entities.Job", "Job")
                         .WithMany("Applications")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationStatus", "Status")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationStatus", "Status")
                         .WithMany("Applications")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -493,9 +600,9 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Job", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Job", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", "Employer")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", "Employer")
                         .WithMany("Jobs")
                         .HasForeignKey("EmployerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -504,15 +611,15 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.Navigation("Employer");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Message", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Message", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", "Receiver")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", "Sender")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", "Sender")
                         .WithMany("SendMessages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -523,15 +630,15 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Review", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Review", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", "Reviewee")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", "Reviewee")
                         .WithMany("ReceivedReviews")
                         .HasForeignKey("RevieweeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", "Reviewer")
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", "Reviewer")
                         .WithMany("MadeReviews")
                         .HasForeignKey("ReviewerId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -544,13 +651,13 @@ namespace Gig.Platform.Infrastructure.Migrations
 
             modelBuilder.Entity("JobSkill", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.Job", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.Job", null)
                         .WithMany()
                         .HasForeignKey("JobsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.Skill", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.Skill", null)
                         .WithMany()
                         .HasForeignKey("SkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -568,7 +675,7 @@ namespace Gig.Platform.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -577,7 +684,7 @@ namespace Gig.Platform.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -592,7 +699,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -601,19 +708,19 @@ namespace Gig.Platform.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Gig.Platform.Core.Entities.ApplicationUser", null)
+                    b.HasOne("Gig.Platform.Shared.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.ApplicationStatus", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.ApplicationStatus", b =>
                 {
                     b.Navigation("Applications");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Applications");
 
@@ -628,7 +735,7 @@ namespace Gig.Platform.Infrastructure.Migrations
                     b.Navigation("SendMessages");
                 });
 
-            modelBuilder.Entity("Gig.Platform.Core.Entities.Job", b =>
+            modelBuilder.Entity("Gig.Platform.Shared.Entities.Job", b =>
                 {
                     b.Navigation("Applications");
                 });

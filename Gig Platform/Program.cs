@@ -1,4 +1,3 @@
-using Gig.Platform.Core.Entities;
 using Gig.Platform.Core.Interfaces.Repositories;
 using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services;

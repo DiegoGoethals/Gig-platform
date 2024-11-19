@@ -1,5 +1,4 @@
-﻿using Gig.Platform.Core.Entities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Gig.Platform.Core.Services
 {
