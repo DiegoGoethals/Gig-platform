@@ -113,6 +113,8 @@ namespace Gig.Platform.Infrastructure.Data
                 .HasOne(r => r.Reviewee)
                 .WithMany(u => u.ReceivedReviews)
                 .HasForeignKey(r => r.RevieweeId);
+
+            Seeding.Seeder.Seed(modelBuilder);
         }
     }
 }
