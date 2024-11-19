@@ -35,14 +35,17 @@
 	<div class="form-group">
 		<label for="skills">Skills</label>
 		<select id="skills" class="form-control mb-3" multiple>
-
+			@foreach (var skill in skills)
+			{
+				<option value="@skill.Id">@skill.Name</option>
+			}
 		</select>
 	</div>
 	<button type="submit" class="btn btn-primary">Register</button>
 </form>
 
 @code {
-	private IEnumerable<Skill> skills;
+	private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
 	protected override async Task OnInitializedAsync()
 	{
