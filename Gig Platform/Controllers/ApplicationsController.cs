@@ -1,7 +1,5 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
-using Gig_Platform.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gig_Platform.Controllers

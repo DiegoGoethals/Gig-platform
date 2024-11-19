@@ -1,5 +1,4 @@
-﻿using Gig.Platform.Core.Entities;
-using Gig.Platform.Core.Interfaces.Repositories;
+﻿using Gig.Platform.Core.Interfaces.Repositories;
 using Gig.Platform.Infrastructure.Data;
 using Microsoft.Extensions.Logging;
 using System;

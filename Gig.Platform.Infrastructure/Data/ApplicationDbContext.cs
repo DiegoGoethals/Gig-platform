@@ -1,4 +1,4 @@
-﻿using Gig.Platform.Core.Entities;
+﻿global using Gig.Platform.Shared.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

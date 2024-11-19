@@ -1,6 +1,4 @@
-﻿using Gig.Platform.Core.Entities;
-using Gig.Platform.Core.Interfaces.Services;
-using Gig_Platform.Dtos;
+﻿using Gig.Platform.Core.Interfaces.Services;
 using MailKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
