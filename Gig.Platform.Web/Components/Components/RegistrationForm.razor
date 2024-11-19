@@ -1,4 +1,6 @@
-﻿<form>
+﻿@inject ISkillService SkillService
+
+<form>
 	<div class="form-group">
 		<label for="email">Email address</label>
 		<input type="email" class="form-control" id="email" placeholder="Enter email" required>
@@ -40,5 +42,10 @@
 </form>
 
 @code {
+	private IEnumerable<Skill> skills;
 
+	protected override async Task OnInitializedAsync()
+	{
+		skills = await SkillService.GetSkillsAsync();
+	}
 }

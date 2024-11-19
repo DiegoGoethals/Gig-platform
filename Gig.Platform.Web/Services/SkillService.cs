@@ -4,9 +4,18 @@ namespace Gig.Platform.Web.Services
 {
     public class SkillService : ISkillService
     {
-        public Task<IEnumerable<Skill>> GetSkillsAsync()
+        private readonly HttpClient _httpClient;
+
+        public SkillService(HttpClient httpClient)
         {
-            throw new NotImplementedException();
+            _httpClient = httpClient;
+        }
+
+        public async Task<IEnumerable<Skill>> GetSkillsAsync()
+        {
+            var response = await _httpClient.GetAsync("api/skills");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<Skill>>();
         }
     }
 }
