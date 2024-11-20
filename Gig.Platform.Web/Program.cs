@@ -12,6 +12,10 @@ builder.Services.AddHttpClient<ISkillService, SkillService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7257/");
 });
+builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7257/");
+});
 
 var app = builder.Build();
 

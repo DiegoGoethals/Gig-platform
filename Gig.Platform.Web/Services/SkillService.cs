@@ -11,11 +11,11 @@ namespace Gig.Platform.Web.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Skill>> GetSkillsAsync()
+        public async Task<IEnumerable<SkillResponseDto>> GetSkillsAsync()
         {
             var response = await _httpClient.GetAsync("api/skills");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<IEnumerable<Skill>>();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<SkillResponseDto>>();
         }
     }
 }

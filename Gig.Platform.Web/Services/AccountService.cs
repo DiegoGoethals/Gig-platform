@@ -1,0 +1,21 @@
+﻿using Gig.Platform.Web.Interfaces;
+
+namespace Gig.Platform.Web.Services
+{
+    public class AccountService : IAccountService
+    {
+        private readonly HttpClient _httpClient;
+
+        public AccountService(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public async Task<RegistrationResponseDto> RegisterAsync(RegistrationRequestDto dto)
+        {
+            var response = await _httpClient.PostAsync("api/auth/register", JsonContent.Create(dto));
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<RegistrationResponseDto>();
+        }
+    }
+}

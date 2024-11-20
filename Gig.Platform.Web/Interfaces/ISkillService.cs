@@ -5,6 +5,6 @@ namespace Gig.Platform.Web.Interfaces
 {
     public interface ISkillService
     {
-        Task<IEnumerable<Skill>> GetSkillsAsync();
+        Task<IEnumerable<SkillResponseDto>> GetSkillsAsync();
     }
 }
