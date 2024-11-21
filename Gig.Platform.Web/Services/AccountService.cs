@@ -17,5 +17,12 @@ namespace Gig.Platform.Web.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<RegistrationResponseDto>();
         }
+
+        public async Task<AccountResponseDto> Login(AccountRequestDto dto)
+        {
+            var response = await _httpClient.PostAsync("api/auth/login", JsonContent.Create(dto));
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<AccountResponseDto>();
+        }
     }
 }

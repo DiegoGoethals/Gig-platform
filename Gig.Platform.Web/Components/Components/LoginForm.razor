@@ -1,0 +1,33 @@
+﻿@inject IAccountService AccountService
+@inject NavigationManager NavigationManager
+
+<form>
+	<div class="form-group">
+		<label for="username">Username</label>
+		<input type="text" class="form-control" id="username" placeholder="Username" required @bind="@Username">
+	</div>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input type="password" class="form-control" id="password" placeholder="Password" required @bind="@Password">
+	</div>
+	<button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+@code {
+	public string Username { get; set; }
+	public string Password { get; set; }
+
+	private async Task Login()
+	{
+		var dto = new AccountRequestDto
+			{
+				UserName = Username,
+				Password = Password
+			};
+		var response = await AccountService.Login(dto);
+		if (response != null)
+		{
+			NavigationManager.NavigateTo("/");
+		}
+	}
+}
