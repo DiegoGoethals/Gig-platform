@@ -1,0 +1,21 @@
+﻿@page "/auth"
+@rendermode InteractiveServer
+
+@if(IsRegistered)
+{
+	<LoginForm />
+	<p @onclick="ToggleRegistration">Don't have an account yet? Click here to register</p>
+}
+else
+{
+	<RegistrationForm />
+}
+
+@code {
+	public bool IsRegistered { get; set; } = true;
+
+	public void ToggleRegistration()
+	{
+		IsRegistered = !IsRegistered;
+	}
+}

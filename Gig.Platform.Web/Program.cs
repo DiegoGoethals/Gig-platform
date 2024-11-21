@@ -1,6 +1,8 @@
 using Gig.Platform.Web.Components;
 using Gig.Platform.Web.Interfaces;
 using Gig.Platform.Web.Services;
+using Gig.Platform.Web.Services.Special_services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,10 @@ builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7257/");
 });
+
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 var app = builder.Build();
 
