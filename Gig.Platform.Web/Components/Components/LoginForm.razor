@@ -1,7 +1,8 @@
 ﻿@inject IAccountService AccountService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
 
-<form>
+<form @onsubmit="Login">
 	<div class="form-group">
 		<label for="username">Username</label>
 		<input type="text" class="form-control" id="username" placeholder="Username" required @bind="@Username">
@@ -27,7 +28,15 @@
 		var response = await AccountService.Login(dto);
 		if (response != null)
 		{
+			if (AuthStateProvider is CustomAuthenticationStateProvider customAuthProvider)
+			{
+				await customAuthProvider.NotifyUserAuthentication(response.Token);
+			}
 			NavigationManager.NavigateTo("/");
+		}
+		else
+		{
+			Console.WriteLine("Login failed");
 		}
 	}
 }

@@ -1,7 +1,14 @@
 ﻿@page "/"
+@inherits SecurePageBase
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<LoginForm />
+<h1>Thank you for visiting the app</h1>
+
+@code {
+}
