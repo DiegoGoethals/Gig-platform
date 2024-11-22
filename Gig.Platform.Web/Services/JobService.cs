@@ -1,4 +1,5 @@
-﻿using Gig.Platform.Web.Interfaces;
+﻿using Gig.Platform.Shared.Dtos;
+using Gig.Platform.Web.Interfaces;
 using Gig.Platform.Web.Services.Special_services;
 
 namespace Gig.Platform.Web.Services
@@ -23,7 +24,16 @@ namespace Gig.Platform.Web.Services
 
         public async Task<IEnumerable<JobResponseDto>> GetAllJobsByEmployerAsync(Guid employerId)
         {
-            var response = await _httpClient.GetAsync($"api/jobs/employer/{employerId}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/jobs/employer/{employerId}");
+
+            var token = await _jwtService.GetTokenAsync();
+
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.SendAsync(request);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseBody);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<IEnumerable<JobResponseDto>>();
         }
