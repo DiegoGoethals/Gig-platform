@@ -30,8 +30,8 @@ namespace Gig.Platform.Core.Services
                     if (results != null && results.Count > 0)
                     {
                         var resultObject = results[0];
-                        if (double.TryParse((string)resultObject["lat"], out double latitude) &&
-                            double.TryParse((string)resultObject["lon"], out double longitude))
+                        if (double.TryParse(((string)resultObject["lat"]).Replace(".", ","), out double latitude) &&
+                            double.TryParse(((string)resultObject["lon"]).Replace(".", ","), out double longitude))
                         {
                             return (latitude, longitude);
                         }
