@@ -1,7 +1,14 @@
 ﻿@inject IJobService JobService
 
+<ul id="jobs">
+	@foreach (var job in Jobs)
+	{
+		<JobCard Job="job"/>
+	}
+</ul>
+
 @code {
-	private IEnumerable<JobResponseDto> Jobs { get; set; }
+	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
 
 	protected override async Task OnInitializedAsync()
 	{
