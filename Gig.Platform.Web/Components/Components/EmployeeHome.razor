@@ -1,0 +1,10 @@
+﻿@inject IJobService JobService
+
+@code {
+	private IEnumerable<JobResponseDto> Jobs { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Jobs = await JobService.GetAllJobsForEmployeesAsync();
+	}
+}

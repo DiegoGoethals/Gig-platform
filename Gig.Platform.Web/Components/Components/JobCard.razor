@@ -1,0 +1,10 @@
+﻿<li id="@Job.Id">
+	<h3>@Job.Name</h3>
+	<p>@Job.Salary</p>
+	<p>Distance</p>  <!-- This will be a calculated distance depending on job location and your location -->
+</li>
+
+@code {
+	[Parameter]
+	public JobResponseDto Job { get; set; }
+}
