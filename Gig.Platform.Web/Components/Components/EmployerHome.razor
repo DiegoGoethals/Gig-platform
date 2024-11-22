@@ -1,0 +1,102 @@
+﻿@using System.Security.Claims;
+@inject IJobService JobService
+
+<ul id="jobs">
+	@foreach (var job in Jobs)
+	{
+		<li>
+			<JobCard Job="job" />
+		</li>
+	}
+</ul>
+<form @onsubmit="AddJob">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Job name" required @bind="@Name">
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea type="text" class="form-control" id="description" placeholder="Small job description" maxlength="100" required @bind="@Description"/>
+    </div>
+    <div class="form-group">
+        <label for="salary">Salary</label>
+        <input type="number" class="form-control" id="salary" min="5" step="1" required @bind="@Salary">
+    </div>
+    <div class="form-group">
+        <label for="streetname">Street</label>
+        <input type="text" class="form-control" id="streetname" placeholder="Street name" required @bind="@StreetName">
+    </div>
+    <div class="form-group">
+        <label for="housenumber">House number</label>
+        <input type="text" class="form-control" id="housenumber" placeholder="House number" required @bind="@HouseNumber">
+    </div>
+    <div class="form-group">
+        <label for="postal">Postal code</label>
+        <input type="text" class="form-control" id="postal" placeholder="Postal code" required @bind="@Postal">
+    </div>
+    <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" class="form-control" id="city" required @bind="@City">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Job</button>
+</form>
+
+@code {
+	[Parameter]
+	public ClaimsPrincipal User { get; set; }
+
+	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
+
+	private string Name { get; set; }
+    private string Description { get; set; }
+    private double Salary { get; set; }
+    private string StreetName { get; set; }
+    private string HouseNumber { get; set; }
+    private string Postal { get; set; }
+    private string City { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+        try
+        {
+            if (User?.Claims == null || !User.Claims.Any(c => c.Type.Contains("nameidentifier")))
+            {
+                return;
+            }
+
+            var employerId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
+            Jobs = await JobService.GetAllJobsByEmployerAsync(employerId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching jobs: {ex.Message}");
+            Jobs = Enumerable.Empty<JobResponseDto>();
+        }
+	}
+
+	private async Task AddJob()
+	{
+        try
+        {
+            var job = new JobRequestDto
+            {
+                Name = Name,
+                Description = Description,
+                Salary = Salary,
+				Skills = new List<string>(),
+                StreetName = StreetName,
+                HouseNumber = HouseNumber,
+                PostalCode = Postal,
+                City = City,
+                EmployerId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)
+            };
+
+            await JobService.AddJobAsync(job);
+            Jobs = await JobService.GetAllJobsByEmployerAsync(Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding job: {ex.Message}");
+        }
+	}
+}

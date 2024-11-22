@@ -1,14 +1,23 @@
 ﻿@page "/"
 @inherits SecurePageBase
 
-@inject AuthenticationStateProvider AuthStateProvider
-@inject NavigationManager NavigationManager
-
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<h1>Thank you for visiting the app</h1>
+@if (User == null)
+{
+    <p>Loading...</p>
+}
+else if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employer"))
+{
+    <EmployerHome User="User" />
+}
+else
+{
+    <EmployeeHome />
+}
 
 @code {
+	
 }
