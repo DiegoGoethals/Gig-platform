@@ -184,6 +184,7 @@ namespace Gig_Platform.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _jobService.GetByIdAsync(id);
@@ -196,11 +197,11 @@ namespace Gig_Platform.Controllers
                     Description = result.Value.Description,
                     Salary = result.Value.Salary,
                     EmployerId = result.Value.EmployerId,
-                    Skills = result.Value.Skills.Select(skill => new SkillResponseDto
+                    Skills = result.Value.Skills?.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList(),
+                    }).ToList() ?? new List<SkillResponseDto>(),
                     Latitude = result.Value.Latitude,
                     Longitude = result.Value.Longitude,
                     StreetName = result.Value.StreetName,
