@@ -1,5 +1,6 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services;
+using Gig.Platform.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -141,7 +142,13 @@ namespace Gig_Platform.Controllers
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList()
+                    }).ToList(),
+                    Latitude = job.Latitude,
+                    Longitude = job.Longitude,
+                    StreetName = job.StreetName,
+                    HouseNumber = job.HouseNumber,
+                    PostalCode = job.PostalCode,
+                    City = job.City
                 }));
             }
             return HandleError(result.Errors);
@@ -164,7 +171,13 @@ namespace Gig_Platform.Controllers
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList()
+                    }).ToList(),
+                    Latitude = job.Latitude,
+                    Longitude = job.Longitude,
+                    StreetName = job.StreetName,
+                    HouseNumber = job.HouseNumber,
+                    PostalCode = job.PostalCode,
+                    City = job.City
                 }));
             }
             return HandleError(result.Errors);
@@ -187,7 +200,13 @@ namespace Gig_Platform.Controllers
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList()
+                    }).ToList(),
+                    Latitude = result.Value.Latitude,
+                    Longitude = result.Value.Longitude,
+                    StreetName = result.Value.StreetName,
+                    HouseNumber = result.Value.HouseNumber,
+                    PostalCode = result.Value.PostalCode,
+                    City = result.Value.City
                 });
             }
             return HandleError(result.Errors);
@@ -211,7 +230,13 @@ namespace Gig_Platform.Controllers
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList()
+                    }).ToList(),
+                    Latitude = result.Value.Latitude,
+                    Longitude = result.Value.Longitude,
+                    StreetName = result.Value.StreetName,
+                    HouseNumber = result.Value.HouseNumber,
+                    PostalCode = result.Value.PostalCode,
+                    City = result.Value.City
                 });
             }
             return HandleError(result.Errors);
@@ -242,7 +267,13 @@ namespace Gig_Platform.Controllers
                     {
                         Id = skill.Id,
                         Name = skill.Name
-                    }).ToList()
+                    }).ToList(),
+                    Latitude = job.Latitude,
+                    Longitude = job.Longitude,
+                    StreetName = job.StreetName,
+                    HouseNumber = job.HouseNumber,
+                    PostalCode = job.PostalCode,
+                    City = job.City
                 }));
             }
             return HandleError(result.Errors);
