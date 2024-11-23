@@ -1,0 +1,40 @@
+﻿@page "/job/{jobId}"
+@inherits SecurePageBase
+@rendermode InteractiveServer
+
+@inject IJobService JobService
+
+@if (Job == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h1>@Job.Name</h1>
+    <p>@Job.Description</p>
+}
+
+@code {
+    [Parameter]
+    public string JobId { get; set; }
+
+    private JobResponseDto Job { get; set; }
+
+    private bool _isJobLoaded;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender && !_isJobLoaded)
+        {
+            _isJobLoaded = true;
+
+            if (!string.IsNullOrEmpty(JobId))
+            {
+                Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
+                StateHasChanged();
+            }
+        }
+    }
+}

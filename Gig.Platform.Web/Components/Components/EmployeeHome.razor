@@ -3,11 +3,14 @@
 <ul id="jobs">
 	@foreach (var job in Jobs)
 	{
-		<JobCard Job="job"/>
+		<JobCard Job="job" NavigationManager="NavigationManager" />
 	}
 </ul>
 
 @code {
+	[Parameter]
+	public NavigationManager NavigationManager { get; set; }
+
 	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
 
 	protected override async Task OnInitializedAsync()

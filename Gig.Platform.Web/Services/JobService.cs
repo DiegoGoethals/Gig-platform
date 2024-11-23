@@ -54,5 +54,18 @@ namespace Gig.Platform.Web.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<JobResponseDto>();
         }
+
+        public async Task<JobResponseDto> GetJobByIdAsync(Guid jobId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/jobs/{jobId}");
+
+            var token = await _jwtService.GetTokenAsync();
+
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<JobResponseDto>();
+        }
     }
 }
