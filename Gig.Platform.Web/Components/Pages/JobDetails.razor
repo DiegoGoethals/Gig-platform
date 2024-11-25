@@ -24,22 +24,9 @@ else
         <ul>
 		@foreach (var application in Applications)
 		{
-            <li>
-			    <p>@application.CandidateName</p>
-                <p>@application.ApplicationStatus</p>
-                <div>
-                    @foreach (var status in applicationStatuses) {
-                        if (status.Name == "Approved")
-                        {
-						    <button class="btn btn-success" @onclick="() => HandleApplicationAsync(application.Id, status)">Accept</button>
-                        }
-                        else if (status.Name == "Rejected")
-                        {
-						    <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(application.Id, status)">Reject</button>
-                        }
-					}
-                </div>
-            </li>
+				<ApplicationCard application="application" 
+                    applicationStatuses="applicationStatuses" 
+                    OnHandleApplication="HandleApplicationAsync" />
 		}
         </ul>
     }
@@ -89,10 +76,10 @@ else
 		await ApplicationService.ApplyAsync(dto);
     }
 
-    private async Task HandleApplicationAsync(Guid applicationId, ApplicationStatusDto status)
-	{
-		await ApplicationService.HandleApplicationAsync(applicationId, status);
-		Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
-		StateHasChanged();
-	}
+    private async Task HandleApplicationAsync((Guid applicationId, ApplicationStatusDto status) args)
+    {
+        await ApplicationService.HandleApplicationAsync(args.applicationId, args.status);
+        Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
+        StateHasChanged();
+    }
 }
