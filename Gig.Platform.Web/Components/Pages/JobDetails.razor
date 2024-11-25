@@ -20,6 +20,17 @@ else
             <button class="btn btn-primary" @onclick="Apply">Apply</button>
         </div>
     }
+    else {
+        <ul>
+		@foreach (var application in Applications)
+		{
+            <li>
+			    <p>@application.CandidateName</p>
+                <p>@application.ApplicationStatus</p>
+            </li>
+		}
+        </ul>
+    }
 }
 
 @code {
@@ -27,6 +38,7 @@ else
     public string JobId { get; set; }
 
     private JobResponseDto Job { get; set; }
+	private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
 
     private bool _isJobLoaded;
 
@@ -41,6 +53,7 @@ else
             if (!string.IsNullOrEmpty(JobId))
             {
                 Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
+				Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
                 StateHasChanged();
             }
         }

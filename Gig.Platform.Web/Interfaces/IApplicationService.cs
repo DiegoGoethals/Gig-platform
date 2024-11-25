@@ -3,5 +3,6 @@
     public interface IApplicationService
     {
         Task<ApplicationResponseDto> ApplyAsync(ApplicationRequestDto dto);
+        Task<IEnumerable<ApplicationResponseDto>> GetAllByJobAsync(Guid jobId);
     }
 }
