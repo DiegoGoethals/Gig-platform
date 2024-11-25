@@ -22,6 +22,10 @@ builder.Services.AddHttpClient<IJobService, JobService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7257/");
 });
+builder.Services.AddHttpClient<IApplicationService, ApplicationService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7257/");
+});
 
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();

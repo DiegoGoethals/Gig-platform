@@ -31,9 +31,6 @@ namespace Gig.Platform.Web.Services
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             var response = await _httpClient.SendAsync(request);
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responseBody);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<IEnumerable<JobResponseDto>>();
         }
