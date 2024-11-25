@@ -1,0 +1,31 @@
+﻿<li>
+    <p>@application.CandidateName</p>
+    <p>@application.ApplicationStatus</p>
+    <div>
+        @foreach (var status in applicationStatuses)
+        {
+            if (status.Name == "Approved")
+            {
+                <button class="btn btn-success" @onclick="() => HandleApplicationAsync(status)">Accept</button>
+            }
+            else if (status.Name == "Rejected")
+            {
+                <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(status)">Reject</button>
+            }
+        }
+    </div>
+</li>
+
+@code {
+	[Parameter]
+	public ApplicationResponseDto application { get; set; }
+	[Parameter]
+	public IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; }
+    [Parameter]
+    public EventCallback<(Guid applicationId, ApplicationStatusDto status)> OnHandleApplication { get; set; }
+
+    private async Task HandleApplicationAsync(ApplicationStatusDto status)
+    {
+        await OnHandleApplication.InvokeAsync((application.Id, status));
+    }
+}
