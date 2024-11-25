@@ -29,7 +29,14 @@ else
                 <p>@application.ApplicationStatus</p>
                 <div>
                     @foreach (var status in applicationStatuses) {
-                            <button class="btn btn-primary" @onclick="() => HandleApplicationAsync(application.Id, status)">@status.Name</button>
+                        if (status.Name == "Approved")
+                        {
+						    <button class="btn btn-success" @onclick="() => HandleApplicationAsync(application.Id, status)">Accept</button>
+                        }
+                        else if (status.Name == "Rejected")
+                        {
+						    <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(application.Id, status)">Reject</button>
+                        }
 					}
                 </div>
             </li>
