@@ -172,3 +172,124 @@ button.btn-primary {
         width: 90%;
     }
 }
+
+/* General Modal Styles */
+dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -25%);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh; /* Limit the height to fit within the viewport */
+    overflow-y: auto; /* Allow scrolling if the content overflows */
+    border: none;
+    border-radius: 10px;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+    dialog[open] {
+        display: block;
+    }
+
+    /* Modal Close Button */
+    dialog button {
+        top: 1rem;
+        right: 1rem;
+        z-index: 10; /* Ensure it stays above other content */
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #999;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        dialog button:hover {
+            color: #4a90e2;
+        }
+
+    /* Form Styling Inside the Modal */
+    dialog form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    dialog .form-group label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.3rem;
+    }
+
+    dialog .form-group input,
+    dialog .form-group textarea {
+        width: 100%;
+        padding: 0.7rem;
+        font-size: 0.9rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+        dialog .form-group input:focus,
+        dialog .form-group textarea:focus {
+            border-color: #4a90e2;
+        }
+
+    dialog button.btn-primary {
+        padding: 0.8rem;
+        background-color: #4a90e2;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        dialog button.btn-primary:hover {
+            background-color: #357ab8;
+        }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    dialog {
+        width: 95%;
+    }
+
+        dialog button {
+            font-size: 1.3rem;
+        }
+
+        dialog form {
+            gap: 0.8rem;
+        }
+}
+
+/* Responsive Design */
+@media (max-height: 500px) {
+    dialog {
+        top: 10%; /* Avoid starting too high on very short viewports */
+        transform: translate(-50%, 0); /* Prevent clipping from transform */
+    }
+}
+
+/* Modal Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
