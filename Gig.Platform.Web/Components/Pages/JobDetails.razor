@@ -14,7 +14,7 @@ else
     <h1>@Job.Name</h1>
     <p>@Job.Description</p>
 
-    @if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employee"))
+    @if (role == "Employee")
     {
         <div>
             <button class="btn btn-primary" @onclick="Apply">Apply</button>
@@ -27,6 +27,18 @@ else
             <li>
 			    <p>@application.CandidateName</p>
                 <p>@application.ApplicationStatus</p>
+                <div>
+                    @foreach (var status in applicationStatuses) {
+                        if (status.Name == "Approved")
+                        {
+						    <button class="btn btn-success" @onclick="() => HandleApplicationAsync(application.Id, status)">Accept</button>
+                        }
+                        else if (status.Name == "Rejected")
+                        {
+						    <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(application.Id, status)">Reject</button>
+                        }
+					}
+                </div>
             </li>
 		}
         </ul>
@@ -36,15 +48,18 @@ else
 @code {
     [Parameter]
     public string JobId { get; set; }
+	private string role { get; set; }
 
     private JobResponseDto Job { get; set; }
 	private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
+    private IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; } = Enumerable.Empty<ApplicationStatusDto>();
 
     private bool _isJobLoaded;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+		role = User.Claims.First(c => c.Type.Contains("role")).Value;
 
         if (firstRender && !_isJobLoaded)
         {
@@ -53,7 +68,12 @@ else
             if (!string.IsNullOrEmpty(JobId))
             {
                 Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
-				Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
+                
+				if (role != "Employee")
+				{
+					Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
+					applicationStatuses = await ApplicationService.GetAllStatusesAsync();
+				}
                 StateHasChanged();
             }
         }
@@ -68,4 +88,11 @@ else
 		};
 		await ApplicationService.ApplyAsync(dto);
     }
+
+    private async Task HandleApplicationAsync(Guid applicationId, ApplicationStatusDto status)
+	{
+		await ApplicationService.HandleApplicationAsync(applicationId, status);
+		Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
+		StateHasChanged();
+	}
 }
