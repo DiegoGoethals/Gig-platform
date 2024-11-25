@@ -9,9 +9,7 @@ else {
     <ul id="jobs">
         @foreach (var job in Jobs)
         {
-            <li>
-                <JobCard Job="job" NavigationManager="NavigationManager" />
-            </li>
+            <JobCard Job="job" NavigationManager="NavigationManager" />
         }
     </ul>
 }
