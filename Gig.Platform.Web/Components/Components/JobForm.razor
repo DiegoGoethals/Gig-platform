@@ -1,0 +1,83 @@
+﻿@using System.Security.Claims;
+
+@inject IJSRuntime JSRuntime
+
+<dialog @ref="dialog">
+    <button @onclick="CloseDialog">X</button>
+    <form @onsubmit="AddJob">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Job name" required @bind="@Name">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea type="text" class="form-control" id="description" placeholder="Small job description" maxlength="100" required @bind="@Description" />
+        </div>
+        <div class="form-group">
+            <label for="salary">Salary</label>
+            <input type="number" class="form-control" id="salary" min="5" step="1" required @bind="@Salary">
+        </div>
+        <div class="form-group">
+            <label for="streetname">Street</label>
+            <input type="text" class="form-control" id="streetname" placeholder="Street name" required @bind="@StreetName">
+        </div>
+        <div class="form-group">
+            <label for="housenumber">House number</label>
+            <input type="text" class="form-control" id="housenumber" placeholder="House number" required @bind="@HouseNumber">
+        </div>
+        <div class="form-group">
+            <label for="postal">Postal code</label>
+            <input type="text" class="form-control" id="postal" placeholder="Postal code" required @bind="@Postal">
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" required @bind="@City">
+        </div>
+        <button type="submit" class="btn btn-primary">Add Job</button>
+    </form>
+</dialog>
+
+@code {
+    [Parameter]
+    public ClaimsPrincipal User { get; set; }
+    [Parameter]
+    public EventCallback<JobRequestDto> OnAddJob { get; set; }
+
+    private ElementReference dialog;
+
+    private string Name { get; set; }
+    private string Description { get; set; }
+    private double Salary { get; set; }
+    private string StreetName { get; set; }
+    private string HouseNumber { get; set; }
+    private string Postal { get; set; }
+    private string City { get; set; }
+
+    private async Task AddJob()
+    {
+        var job = new JobRequestDto
+		{
+			Name = Name,
+			Description = Description,
+			Salary = Salary,
+			Skills = new List<string>(),
+			StreetName = StreetName,
+			HouseNumber = HouseNumber,
+			PostalCode = Postal,
+			City = City,
+			EmployerId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)
+		};
+        await OnAddJob.InvokeAsync(job);
+        await CloseDialog();
+    }
+
+    public async Task Show()
+    {
+        await JSRuntime.InvokeVoidAsync("openDialog", dialog);
+    }
+
+    private async Task CloseDialog()
+    {
+        await JSRuntime.InvokeVoidAsync("closeDialog", dialog);
+    }
+}
