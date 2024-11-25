@@ -13,7 +13,6 @@ else
 {
     <h1>@Job.Name</h1>
     <p>@Job.Description</p>
-    <p>@User.Claims.FirstOrDefault(c => c.Type.Contains("role")).Value</p>
 
     @if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employee"))
     {
