@@ -4,5 +4,7 @@
     {
         Task<ApplicationResponseDto> ApplyAsync(ApplicationRequestDto dto);
         Task<IEnumerable<ApplicationResponseDto>> GetAllByJobAsync(Guid jobId);
+        Task<IEnumerable<ApplicationStatusDto>> GetAllStatusesAsync();
+        Task HandleApplicationAsync(Guid applicationId, ApplicationStatusDto status);
     }
 }
