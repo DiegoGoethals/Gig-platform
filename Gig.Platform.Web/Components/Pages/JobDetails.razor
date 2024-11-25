@@ -5,32 +5,35 @@
 @inject IJobService JobService
 @inject IApplicationService ApplicationService
 
-@if (Job == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <h1>@Job.Name</h1>
-    <p>@Job.Description</p>
-
-    @if (role == "Employee")
+<div class="job-details">
+    @if (Job == null)
     {
-        <div>
-            <button class="btn btn-primary" @onclick="Apply">Apply</button>
-        </div>
+        <p>Loading...</p>
     }
-    else {
-        <ul>
-		@foreach (var application in Applications)
-		{
-				<ApplicationCard application="application" 
-                    applicationStatuses="applicationStatuses" 
-                    OnHandleApplication="HandleApplicationAsync" />
-		}
-        </ul>
+    else
+    {
+        <h1>@Job.Name</h1>
+        <p>@Job.Description</p>
+
+        @if (role == "Employee")
+        {
+            <div>
+                <button class="btn btn-primary" @onclick="Apply">Apply</button>
+            </div>
+        }
+        else
+        {
+            <ul>
+                @foreach (var application in Applications)
+                {
+                    <ApplicationCard application="application"
+                                     applicationStatuses="applicationStatuses"
+                                     OnHandleApplication="HandleApplicationAsync" />
+                }
+            </ul>
+        }
     }
-}
+</div>
 
 @code {
     [Parameter]
