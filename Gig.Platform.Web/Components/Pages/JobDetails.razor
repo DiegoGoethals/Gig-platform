@@ -3,6 +3,7 @@
 @rendermode InteractiveServer
 
 @inject IJobService JobService
+@inject IApplicationService ApplicationService
 
 @if (Job == null)
 {
@@ -12,6 +13,14 @@ else
 {
     <h1>@Job.Name</h1>
     <p>@Job.Description</p>
+    <p>@User.Claims.FirstOrDefault(c => c.Type.Contains("role")).Value</p>
+
+    @if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employee"))
+    {
+        <div>
+            <button class="btn btn-primary" @onclick="Apply">Apply</button>
+        </div>
+    }
 }
 
 @code {
@@ -36,5 +45,15 @@ else
                 StateHasChanged();
             }
         }
+    }
+
+    private async Task Apply()
+    {
+		var dto = new ApplicationRequestDto
+	    {
+			JobId = Job.Id,
+            CandidateId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)
+		};
+		await ApplicationService.ApplyAsync(dto);
     }
 }
