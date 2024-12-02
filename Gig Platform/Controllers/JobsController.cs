@@ -97,6 +97,7 @@ namespace Gig_Platform.Controllers
                     Description = result.Value.Description,
                     Salary = result.Value.Salary,
                     EmployerId = result.Value.EmployerId,
+                    EmployerName = result.Value.Employer.UserName,
                     Skills = result.Value.Skills.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,
@@ -138,6 +139,7 @@ namespace Gig_Platform.Controllers
                     Description = job.Description,
                     Salary = job.Salary,
                     EmployerId = job.EmployerId,
+                    EmployerName = job.Employer.UserName,
                     Skills = job.Skills.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,
@@ -167,6 +169,7 @@ namespace Gig_Platform.Controllers
                     Description = job.Description,
                     Salary = job.Salary,
                     EmployerId = job.EmployerId,
+                    EmployerName = job.Employer.UserName,
                     Skills = job.Skills.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,
@@ -197,6 +200,7 @@ namespace Gig_Platform.Controllers
                     Description = result.Value.Description,
                     Salary = result.Value.Salary,
                     EmployerId = result.Value.EmployerId,
+                    EmployerName = result.Value.Employer.UserName,
                     Skills = result.Value.Skills?.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,
@@ -227,6 +231,7 @@ namespace Gig_Platform.Controllers
                     Description = result.Value.Description,
                     Salary = result.Value.Salary,
                     EmployerId = result.Value.EmployerId,
+                    EmployerName = result.Value.Employer.UserName,
                     Skills = result.Value.Skills.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,
@@ -257,6 +262,7 @@ namespace Gig_Platform.Controllers
                     Description = job.Description,
                     Salary = job.Salary,
                     EmployerId = job.EmployerId,
+                    EmployerName = job.Employer.UserName,
                     Applications = job.Applications.Select(application => new ApplicationResponseDto
                     {
                         Id = application.Id,
@@ -293,6 +299,7 @@ namespace Gig_Platform.Controllers
                     Description = job.Description,
                     Salary = job.Salary,
                     EmployerId = job.EmployerId,
+                    EmployerName = job.Employer.UserName,
                     Skills = job.Skills.Select(skill => new SkillResponseDto
                     {
                         Id = skill.Id,

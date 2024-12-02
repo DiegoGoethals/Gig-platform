@@ -7,6 +7,7 @@
         public string Description { get; set; }
         public double Salary { get; set; }
         public Guid EmployerId { get; set; }
+        public string EmployerName { get; set; }
         public ICollection<ApplicationResponseDto> Applications { get; set; }
         public ICollection<SkillResponseDto> Skills { get; set; }
         public double Longitude { get; set; }

@@ -25,6 +25,11 @@
                             reject('An unknown error occurred.');
                             break;
                     }
+                },
+                {
+                    enableHighAccuracy: true, // Request high accuracy, typically using GPS
+                    timeout: 5000, // 5 seconds timeout
+                    maximumAge: 0 // Don't use cached location data
                 }
             );
         }
