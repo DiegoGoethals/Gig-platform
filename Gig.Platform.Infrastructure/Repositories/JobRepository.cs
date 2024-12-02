@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +25,20 @@ namespace Gig.Platform.Infrastructure.Repositories
                 .Include(j => j.Applications)
                 .ThenInclude(a => a.Status)
                 .Include(j => j.Skills)
+                .Include(j => j.Employer)
                 .ToListAsync();
+        }
+
+        public async override Task<Job> GetByIdAsync(Guid id)
+        {
+            return await _table
+                .Include(j => j.Applications)
+                    .ThenInclude(a => a.Candidate)
+                .Include(j => j.Applications)
+                    .ThenInclude(a => a.Status)
+                .Include(j => j.Skills)
+                .Include(j => j.Employer)
+                .FirstOrDefaultAsync(j => j.Id == id);
         }
 
         public async Task<IEnumerable<Job>> GetJobsByDistance(double latitude, double longitude, double distance)
@@ -35,6 +49,7 @@ namespace Gig.Platform.Infrastructure.Repositories
                 .Include(j => j.Applications)
                     .ThenInclude(a => a.Status)
                 .Include(j => j.Skills)
+                .Include(j => j.Employer)
                 .ToListAsync();
 
             var filteredJobs = allJobs.Where(j =>

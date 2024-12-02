@@ -14,9 +14,12 @@
     {
         <h1>@Job.Name</h1>
         <p>@Job.Description</p>
+		<p>Salary: €@Job.Salary</p>
+		<p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
 
         @if (role == "Employee")
         {
+            <p>Employer: @Job.EmployerName</p>
             <div>
                 <button class="btn btn-primary" @onclick="Apply">Apply</button>
             </div>
