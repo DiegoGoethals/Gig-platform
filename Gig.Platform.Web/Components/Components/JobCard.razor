@@ -2,7 +2,7 @@
 	<h3>@Job.Name</h3>
 	<p>Salary: @Job.Salary</p>
 	<p>City: @Job.City</p>
-	<p>Distance</p>  <!-- This will be a calculated distance depending on job location and your location -->
+	<p>Distance: @distance Km</p>
 </li>
 
 @code {
@@ -10,6 +10,16 @@
 	public JobResponseDto Job { get; set; }
 	[Parameter]
 	public NavigationManager NavigationManager { get; set; }
+	[Parameter]
+	public ILocationService LocationService { get; set; }
+
+	private int distance { get; set; }
+
+	protected override void OnInitialized()
+	{
+		var userLocation = LocationService.GetUserLocation();
+		distance = LocationService.GetDistance(Job.Latitude, Job.Longitude);
+	}
 
 	private void SeeJobDetails() {
 		NavigationManager.NavigateTo($"/job/{Job.Id}");
