@@ -1,5 +1,6 @@
 ﻿@using System.Security.Claims;
 @inject IJobService JobService
+@inject ILocationService LocationService
 
 @if (Jobs == null || !Jobs.Any())
 {
@@ -9,7 +10,7 @@ else {
     <ul id="jobs">
         @foreach (var job in Jobs)
         {
-            <JobCard Job="job" NavigationManager="NavigationManager" />
+            <JobCard Job="job" NavigationManager="NavigationManager" LocationService="LocationService" />
         }
     </ul>
 }

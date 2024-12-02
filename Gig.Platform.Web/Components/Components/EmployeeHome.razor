@@ -1,9 +1,10 @@
 ﻿@inject IJobService JobService
+@inject ILocationService LocationService
 
 <ul id="jobs">
 	@foreach (var job in Jobs)
 	{
-		<JobCard Job="job" NavigationManager="NavigationManager" />
+		<JobCard Job="job" NavigationManager="NavigationManager" LocationService="LocationService" />
 	}
 </ul>
 
