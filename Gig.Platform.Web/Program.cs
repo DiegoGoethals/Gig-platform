@@ -26,6 +26,10 @@ builder.Services.AddHttpClient<IApplicationService, ApplicationService>(client =
 {
     client.BaseAddress = new Uri("https://localhost:7257/");
 });
+builder.Services.AddHttpClient<IReviewService, ReviewService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7257/");
+});
 
 builder.Services.AddScoped<ILocationService, LocationService>();
 
