@@ -1,0 +1,57 @@
+﻿@using System.Security.Claims;
+
+@inject IJSRuntime JSRuntime
+@inject IReviewService ReviewService
+
+<dialog @ref="dialog">
+    <button @onclick="CloseDialog">X</button>
+    <form @onsubmit="SubmitReview">
+        <div class="form-group">
+            <label for="rating">Rating</label>
+            <input type="number" class="form-control" id="rating" min="0" max="10" step="1" required @bind="@Rating"/>
+        </div>
+        <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" id="comment" required @bind="@Comment"/>
+        </div>
+		<button type="submit" class="btn btn-primary">Submit review</button>
+    </form>
+</dialog>
+
+@code {
+    [Parameter]
+    public ClaimsPrincipal User { get; set; }
+	[Parameter]
+	public string RevieweeId { get; set; }
+	[Parameter]
+	public EventCallback UpdatePage { get; set; }
+
+	private int Rating { get; set; }
+	private string Comment { get; set; }
+
+    private ElementReference dialog;
+
+    public async Task Show()
+    {
+        await JSRuntime.InvokeVoidAsync("openDialog", dialog);
+    }
+
+    private async Task CloseDialog()
+    {
+        await JSRuntime.InvokeVoidAsync("closeDialog", dialog);
+    }
+
+	private async Task SubmitReview()
+	{
+		var dto = new ReviewRequestDto
+			{
+                ReviewerId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value),
+				RevieweeId = Guid.Parse(RevieweeId),
+				Rating = Rating,
+				Comment = Comment
+			};
+		await ReviewService.CreateReviewAsync(dto);
+		await UpdatePage.InvokeAsync();
+		await CloseDialog();
+	}
+}

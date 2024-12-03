@@ -34,6 +34,13 @@
 				<p>@review.Comment</p>
 			}
 		}
+
+		@if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
+		{
+			<button @onclick="AddReview">Add review</button>
+		}
+
+		<ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails"/>
     }
 </div>
 
@@ -42,6 +49,8 @@
 	public string UserId { get; set; }
 
 	private UserDetailsResponseDto userDetails { get; set; }
+
+	private ReviewForm reviewForm;
 
 	private bool _isUserLoaded;
 
@@ -55,9 +64,19 @@
 
 			if (!string.IsNullOrEmpty(UserId))
 			{
-				userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
-				StateHasChanged();
+				await FetchUserDetails();
 			}
 		}
+	}
+
+	private async Task FetchUserDetails()
+	{
+		userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
+		StateHasChanged();
+	}
+
+	private async Task AddReview()
+	{
+		await reviewForm.Show();
 	}
 }
