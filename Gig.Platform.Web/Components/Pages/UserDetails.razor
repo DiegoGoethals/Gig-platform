@@ -1,0 +1,63 @@
+﻿@page "/user/{userId}"
+@inherits SecurePageBase
+@rendermode InteractiveServer
+
+@inject IAccountService AccountService
+
+<div class="user-details">
+    @if (userDetails == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <h1>@userDetails.UserName</h1>
+		<p>Member since: @userDetails.Created.ToString("d")</p>
+
+		@if (userDetails.Skills.Any())
+		{
+			<h2>Skills</h2>
+			foreach (var skill in userDetails.Skills)
+			{
+				<!-- Give this some decent styling later on -->
+				<p>@skill</p>
+			}
+		}
+
+		@if (userDetails.Reviews.Any())
+		{
+			<h2>Reviews</h2>
+			@foreach (var review in userDetails.Reviews)
+			{
+				<!-- Make this a review card later on -->
+				<p>Reviewer: @review.ReviewerName: Rating: @review.Rating</p>
+				<p>@review.Comment</p>
+			}
+		}
+    }
+</div>
+
+@code {
+	[Parameter]
+	public string UserId { get; set; }
+
+	private UserDetailsResponseDto userDetails { get; set; }
+
+	private bool _isUserLoaded;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await base.OnAfterRenderAsync(firstRender);
+		
+		if (firstRender && !_isUserLoaded)
+		{
+			_isUserLoaded = true;
+
+			if (!string.IsNullOrEmpty(UserId))
+			{
+				userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
+				StateHasChanged();
+			}
+		}
+	}
+}

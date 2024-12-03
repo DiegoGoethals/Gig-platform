@@ -176,6 +176,7 @@ namespace Gig_Platform.Controllers
                 return Ok(new UserDetailsResponseDto
                 {
                     UserName = result.Value.UserName,
+                    Created = result.Value.Created,
                     Skills = result.Value.Skills.Any() ? result.Value.Skills.Select(s => s.Name).ToList() : new List<string>(),
                     Reviews = reviews
                 });
