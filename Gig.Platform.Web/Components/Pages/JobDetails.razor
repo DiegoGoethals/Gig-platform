@@ -19,7 +19,7 @@
 
         @if (role == "Employee")
         {
-            <p>Employer: @Job.EmployerName</p>
+            <a href="user/@Job.EmployerId">Employer: @Job.EmployerName</a>
             <div>
                 <button class="btn btn-primary" @onclick="Apply">Apply</button>
             </div>
@@ -41,6 +41,7 @@
 @code {
     [Parameter]
     public string JobId { get; set; }
+
 	private string role { get; set; }
 
     private JobResponseDto Job { get; set; }
