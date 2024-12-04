@@ -39,15 +39,18 @@
                 <option value="Employee">Employee</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="skills">Skills</label>
-            <select id="skills" class="form-control mb-3" multiple @onchange="HandleSkillsChange">
-                @foreach (var skill in skills)
-                {
-                    <option value="@skill.Name">@skill.Name</option>
-                }
-            </select>
-        </div>
+        @if (Role == "Employee")
+        {
+            <div class="form-group">
+                <label for="skills">Skills</label>
+                <select id="skills" class="form-control mb-3" multiple @onchange="HandleSkillsChange">
+                    @foreach (var skill in skills)
+                    {
+                        <option value="@skill.Name">@skill.Name</option>
+                    }
+                </select>
+            </div>
+        }
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>
