@@ -27,12 +27,12 @@
 		@if (userDetails.Reviews.Any())
 		{
 			<h2>Reviews</h2>
-			@foreach (var review in userDetails.Reviews)
-			{
-				<!-- Make this a review card later on -->
-				<p>Reviewer: @review.ReviewerName: Rating: @review.Rating</p>
-				<p>@review.Comment</p>
-			}
+			<ul class="review-list">
+				@foreach (var review in userDetails.Reviews)
+				{
+					<ReviewCard review="@review" />
+				}
+			</ul>
 		}
 
 		@if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
