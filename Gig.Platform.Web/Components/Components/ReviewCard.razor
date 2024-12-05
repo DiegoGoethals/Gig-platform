@@ -1,0 +1,9 @@
+﻿<li class="review-card">
+	<p>Reviewer: @review.ReviewerName: Rating: @review.Rating</p>
+	<p>@review.Comment</p>
+</li>
+
+@code {
+	[Parameter]
+	public ReviewResponseDto review { get; set; }
+}
