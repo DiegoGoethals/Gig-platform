@@ -6,6 +6,7 @@
         <summary>@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value</summary>
             <ul>
                 <li><a href="/">Home</a></li>
+                <li @onclick="Logout">Logout</li>
             </ul>
     </details>
 }
@@ -13,6 +14,10 @@
 @code {
     [Parameter]
     public ClaimsPrincipal User { get; set; }
+    [Parameter]
+	public AuthenticationStateProvider AuthStateProvider { get; set; }
+    [Parameter]
+	public NavigationManager NavigationManager { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -21,4 +26,13 @@
             User = new ClaimsPrincipal(new ClaimsIdentity());
         }
     }
+
+	private async Task Logout()
+	{
+        if (AuthStateProvider is CustomAuthenticationStateProvider customAuthStateProvider)
+        {
+            await customAuthStateProvider.LogoutAsync();
+			NavigationManager.NavigateTo("/auth");
+        }
+	}
 }
