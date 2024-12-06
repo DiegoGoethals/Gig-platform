@@ -4,6 +4,7 @@
 
 @inject IAccountService AccountService
 
+<Menu User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 <div class="user-details">
     @if (userDetails == null)
     {

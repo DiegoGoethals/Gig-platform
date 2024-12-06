@@ -5,6 +5,7 @@
 @inject IJobService JobService
 @inject IApplicationService ApplicationService
 
+<Menu User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 <div class="job-details">
     @if (Job == null)
     {
