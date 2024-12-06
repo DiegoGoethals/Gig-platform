@@ -519,3 +519,9 @@ dialog {
     grid-row-start: 1;
     grid-row-end: 3;
 }
+
+details {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
