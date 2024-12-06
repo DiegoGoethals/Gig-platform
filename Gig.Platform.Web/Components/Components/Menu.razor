@@ -1,0 +1,24 @@
+﻿@using System.Security.Claims;
+
+@if (User?.Identity?.IsAuthenticated == true)
+{
+    <details>
+        <summary>@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value</summary>
+            <ul>
+                <li><a href="/">Home</a></li>
+            </ul>
+    </details>
+}
+
+@code {
+    [Parameter]
+    public ClaimsPrincipal User { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (User == null)
+        {
+            User = new ClaimsPrincipal(new ClaimsIdentity());
+        }
+    }
+}

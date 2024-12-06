@@ -11,10 +11,12 @@
 }
 else if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employer"))
 {
+    <Menu User="User" />
     <EmployerHome User="User" NavigationManager="NavigationManager"/>
 }
 else
 {
+    <Menu User="User" />
     <EmployeeHome NavigationManager="NavigationManager" />
 }
 
