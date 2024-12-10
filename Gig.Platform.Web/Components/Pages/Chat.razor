@@ -1,4 +1,4 @@
-﻿@page "/chat"
+﻿@page "/chat/{Guid:id}"
 
 @inherits SecurePageBase
 
@@ -20,7 +20,14 @@
 </div>
 
 @code {
+    [Parameter]
+	public Guid? id { get; set; }
+
     private IEnumerable<AccountResponseDto> _chats = new List<AccountResponseDto>();
+
+	private AccountResponseDto _selectedChat;
+	private IEnumerable<MessageResponseDto> _messages = new List<MessageResponseDto>();
+
     private bool _chatsLoaded;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -33,6 +40,16 @@
 			_chatsLoaded = true;
 
             _chats = await _chatService.GetChatPartnersAsync(Guid.Parse(id));
+
+			if (id != null)
+			{
+				_selectedChat = _chats.FirstOrDefault(c => c.Id == Guid.Parse(id));
+
+				if (_selectedChat != null)
+				{
+					_messages = await _chatService.GetConversationAsync(Guid.Parse(id), _selectedChat.Id);
+				}
+			}
         }
     }
 }
