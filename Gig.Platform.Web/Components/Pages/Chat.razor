@@ -13,8 +13,12 @@
         <ul>
             @foreach (var chat in _chats)
             {
-                <li @onclick="() => SelectChat(chat.Id)">
-                    @chat.UserName
+                <li @onclick="() => SelectChat(chat.Id)" class="@(_selectedChat?.Id == chat.Id ? "active" : "")">
+                    <div class="chat-item">
+                        <strong>@chat.UserName</strong>
+                        <!-- Should be the last send message here e.g. <p>chat.LastMessage</p>-->
+                        <!-- Timestamp of last message e.g. <span class="timestamp">chat.LastUpdated.ToShortTimeString()</span> -->
+                    </div>
                 </li>
             }
         </ul>
