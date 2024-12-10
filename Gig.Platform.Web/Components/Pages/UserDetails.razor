@@ -2,7 +2,7 @@
 @inherits SecurePageBase
 @rendermode InteractiveServer
 
-@inject IAccountService AccountServic
+@inject IAccountService AccountService
 
 <Menu User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 <div class="user-details">
@@ -14,6 +14,7 @@
     {
         <h1>@userDetails.UserName</h1>
 		<p>Member since: @userDetails.Created.ToString("d")</p>
+		<a type="button" href="/chat/@UserId">Send Message</a>
 
 		@if (userDetails.Skills.Any())
 		{

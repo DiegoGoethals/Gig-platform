@@ -2,14 +2,9 @@
 
 namespace Gig.Platform.Web.Services
 {
-    public class AccountService : IAccountService
+    public class AccountService(HttpClient httpClient) : IAccountService
     {
-        private readonly HttpClient _httpClient;
-
-        public AccountService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
 
         public async Task<RegistrationResponseDto> RegisterAsync(RegistrationRequestDto dto)
         {

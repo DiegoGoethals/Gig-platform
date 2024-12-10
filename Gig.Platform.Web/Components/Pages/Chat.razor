@@ -1,55 +1,120 @@
-﻿@page "/chat/{Guid:id}"
+﻿@page "/chat/{id:guid?}"
+@rendermode InteractiveServer
 
 @inherits SecurePageBase
 
 @inject IChatService _chatService
+@inject IAccountService _accountService
 
 <div class="chat-container">
     <!-- Sidebar: List of chats -->
     <div class="chat-sidebar">
         <h3>Chats</h3>
         <ul>
-
+            @foreach (var chat in _chats)
+            {
+                <li @onclick="() => SelectChat(chat.Id)">
+                    @chat.UserName
+                </li>
+            }
         </ul>
     </div>
 
     <!-- Main Chat Window -->
     <div class="chat-main">
-
+        @if (_selectedChat != null)
+        {
+            <h3>@_selectedChat.UserName</h3>
+            <div class="chat-messages">
+                @foreach (var message in _messages)
+                {
+                    <div class="message">@message.Content</div>
+                }
+            </div>
+            <div class="chat-input">
+                <input type="text" @bind="_newMessage.Content" placeholder="Type a message..." />
+                <button @onclick="SendMessageAsync">Send</button>
+            </div>
+        }
+        else
+        {
+            <p>Select a chat to start messaging.</p>
+        }
     </div>
 </div>
 
 @code {
     [Parameter]
-	public Guid? id { get; set; }
+    public Guid? id { get; set; }
 
     private IEnumerable<AccountResponseDto> _chats = new List<AccountResponseDto>();
-
-	private AccountResponseDto _selectedChat;
-	private IEnumerable<MessageResponseDto> _messages = new List<MessageResponseDto>();
-
+    private AccountResponseDto _selectedChat;
+    private IEnumerable<MessageResponseDto> _messages = new List<MessageResponseDto>();
+    private MessageRequestDto _newMessage = new MessageRequestDto();
     private bool _chatsLoaded;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        var id = User.Claims.First(c => c.Type.Contains("nameidentifier")).Value;
 
         if (firstRender && !_chatsLoaded)
         {
-			_chatsLoaded = true;
+            _chatsLoaded = true;
 
-            _chats = await _chatService.GetChatPartnersAsync(Guid.Parse(id));
+            await FetchChatPartners();
+        }
+    }
 
-			if (id != null)
-			{
-				_selectedChat = _chats.FirstOrDefault(c => c.Id == Guid.Parse(id));
+    protected override async Task OnParametersSetAsync()
+    {
+        if (id.HasValue)
+        {
+            if (_chats.Any(c => c.Id == id.Value)) {
+                _selectedChat = _chats.FirstOrDefault(c => c.Id == id.Value);
+            }
+            else
+            {
+                var details = await _accountService.GetUserDetailsAsync(id.Value);
+                _selectedChat = new AccountResponseDto { Id = details.Id, UserName = details.UserName };
+                _chats.Append(_selectedChat);
+            }
+        }
+    }
 
-				if (_selectedChat != null)
-				{
-					_messages = await _chatService.GetConversationAsync(Guid.Parse(id), _selectedChat.Id);
-				}
-			}
+    private async Task FetchChatPartners()
+    {
+        var userId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
+        _chats = await _chatService.GetChatPartnersAsync(userId);
+        StateHasChanged();
+    }
+
+    private async Task FetchMessages()
+    {
+        var userId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
+        if (_selectedChat != null)
+        {
+            _messages = await _chatService.GetConversationAsync(userId, _selectedChat.Id);
+            StateHasChanged();
+        }
+    }
+
+    private async Task SendMessageAsync()
+    {
+        var userId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
+        _newMessage.SenderId = userId;
+        _newMessage.ReceiverId = _selectedChat?.Id ?? Guid.Empty;
+        await _chatService.SendMessageAsync(_newMessage);
+        _newMessage.Content = string.Empty;
+        await FetchMessages();
+        await FetchChatPartners();
+    }
+
+    private async Task SelectChat(Guid chatId)
+    {
+        _selectedChat = _chats.FirstOrDefault(c => c.Id == chatId);
+        if (_selectedChat != null)
+        {
+            await FetchMessages();
         }
     }
 }
