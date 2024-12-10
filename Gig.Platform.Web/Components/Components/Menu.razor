@@ -6,7 +6,7 @@
         <summary>@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value</summary>
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="/chats">Messages</a></li>
+                <li><a href="/chat">Messages</a></li>
 			    <li><a href="/user/@User.Claims.First(c => c.Type.Contains("nameidentifier")).Value">Profile</a></li>
                 <li @onclick="Logout">Logout</li>
             </ul>
