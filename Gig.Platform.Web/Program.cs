@@ -30,6 +30,10 @@ builder.Services.AddHttpClient<IReviewService, ReviewService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7257/");
 });
+builder.Services.AddHttpClient<IChatService, ChatService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7257/");
+});
 
 builder.Services.AddScoped<ILocationService, LocationService>();
 
