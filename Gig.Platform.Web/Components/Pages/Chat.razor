@@ -2,6 +2,8 @@
 
 @inherits SecurePageBase
 
+@inject IChatService _chatService
+
 <div class="chat-container">
     <!-- Sidebar: List of chats -->
     <div class="chat-sidebar">
@@ -18,5 +20,19 @@
 </div>
 
 @code {
+    private IEnumerable<AccountResponseDto> _chats = new List<AccountResponseDto>();
+    private bool _chatsLoaded;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        var id = User.Claims.First(c => c.Type.Contains("nameidentifier")).Value;
+
+        if (firstRender && !_chatsLoaded)
+        {
+			_chatsLoaded = true;
+
+            _chats = await _chatService.GetChatPartnersAsync(Guid.Parse(id));
+        }
+    }
 }
