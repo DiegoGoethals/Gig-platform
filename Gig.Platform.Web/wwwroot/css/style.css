@@ -613,3 +613,55 @@ details {
         border-radius: 0 4px 4px 0;
         cursor: pointer;
     }
+
+.profile-menu {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 200px;
+    z-index: 1000;
+}
+
+.profile-summary {
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    direction: rtl;
+}
+
+.profile-options {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0 0;
+}
+
+.profile-link {
+    display: block;
+    padding: 8px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+    .profile-link:hover {
+        background-color: #e9ecef;
+    }
+
+.logout-button {
+    padding: 8px;
+    color: #dc3545;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .logout-button:hover {
+        background-color: #f8d7da;
+    }
