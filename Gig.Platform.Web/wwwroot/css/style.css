@@ -585,13 +585,33 @@ details {
     background-color: #fff;
     border: 1px solid #ddd;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .message {
     margin-bottom: 10px;
-    background-color: #e7f3fe;
     padding: 8px;
     border-radius: 4px;
+    max-width: 70%;
+    word-wrap: break-word;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.sender {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.receiver {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+    color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chat-input {
