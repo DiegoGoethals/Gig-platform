@@ -45,7 +45,8 @@
             </section>
         }
 
-        @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
+        @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower() &&
+        !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
         {
             <button class="btn btn-primary" @onclick="AddReview">Add review</button>
         }
