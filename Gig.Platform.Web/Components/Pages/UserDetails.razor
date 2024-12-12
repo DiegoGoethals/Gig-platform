@@ -5,80 +5,89 @@
 @inject IAccountService AccountService
 
 <Menu User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
-<div class="user-details">
+
+<div class="user-container">
     @if (userDetails == null)
     {
         <p>Loading...</p>
     }
     else
     {
-        <h1>@userDetails.UserName</h1>
-		<p>Member since: @userDetails.Created.ToString("d")</p>
-		<a type="button" href="/chat/@UserId">Send Message</a>
+        <div class="user-header">
+            <h1>@userDetails.UserName</h1>
+            <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
+            <a class="btn btn-primary" href="/chat/@UserId">Send Message</a>
+        </div>
 
-		@if (userDetails.Skills.Any())
-		{
-			<h2>Skills</h2>
-			foreach (var skill in userDetails.Skills)
-			{
-				<!-- Give this some decent styling later on -->
-				<p>@skill</p>
-			}
-		}
+        @if (userDetails.Skills.Any())
+        {
+            <section class="user-skills">
+                <h2>Skills</h2>
+                <div class="skills-list">
+                    @foreach (var skill in userDetails.Skills)
+                    {
+                        <p class="skill-item">@skill</p>
+                    }
+                </div>
+            </section>
+        }
 
-		@if (userDetails.Reviews.Any())
-		{
-			<h2>Reviews</h2>
-			<ul class="review-list">
-				@foreach (var review in userDetails.Reviews)
-				{
-					<ReviewCard review="@review" />
-				}
-			</ul>
-		}
+        @if (userDetails.Reviews.Any())
+        {
+            <section class="user-reviews">
+                <h2>Reviews</h2>
+                <ul class="review-list">
+                    @foreach (var review in userDetails.Reviews)
+                    {
+                        <ReviewCard review="@review" />
+                    }
+                </ul>
+            </section>
+        }
 
-		@if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
-		{
-			<button @onclick="AddReview">Add review</button>
-		}
+        @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower() &&
+        !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
+        {
+            <button class="btn btn-primary" @onclick="AddReview">Add review</button>
+        }
 
-		<ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails"/>
+        <ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails" />
     }
 </div>
 
 @code {
-	[Parameter]
-	public string UserId { get; set; }
+    [Parameter]
+    public string UserId { get; set; }
 
-	private UserDetailsResponseDto userDetails { get; set; }
+    private UserDetailsResponseDto userDetails { get; set; }
 
-	private ReviewForm reviewForm;
+    private ReviewForm reviewForm;
 
-	private bool _isUserLoaded;
+    private bool _isUserLoaded;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		await base.OnAfterRenderAsync(firstRender);
-		
-		if (firstRender && !_isUserLoaded)
-		{
-			_isUserLoaded = true;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
 
-			if (!string.IsNullOrEmpty(UserId))
-			{
-				await FetchUserDetails();
-			}
-		}
-	}
+        if (firstRender && !_isUserLoaded)
+        {
+            _isUserLoaded = true;
 
-	private async Task FetchUserDetails()
-	{
-		userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
-		StateHasChanged();
-	}
+            if (!string.IsNullOrEmpty(UserId))
+            {
+                await FetchUserDetails();
+            }
+        }
+    }
 
-	private async Task AddReview()
-	{
-		await reviewForm.Show();
-	}
+    private async Task FetchUserDetails()
+    {
+        userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
+        StateHasChanged();
+    }
+
+    private async Task AddReview()
+    {
+        await reviewForm.Show();
+    }
 }
