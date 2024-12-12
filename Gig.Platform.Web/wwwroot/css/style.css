@@ -685,3 +685,53 @@ details {
     .logout-button:hover {
         background-color: #f8d7da;
     }
+
+.user-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.user-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+    .user-header h1 {
+        font-size: 2rem;
+        color: #333;
+    }
+
+.member-since {
+    color: #777;
+    font-size: 1rem;
+}
+
+.user-skills, .user-reviews {
+    margin-top: 20px;
+}
+
+    .user-skills h2, .user-reviews h2 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+.skills-list, .review-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.skill-item {
+    background-color: #e9ecef;
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.review-list {
+    padding: 0;
+    margin-top: 10px;
+}
