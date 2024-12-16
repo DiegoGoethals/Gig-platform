@@ -40,7 +40,7 @@
                 <ul class="review-list">
                     @foreach (var review in userDetails.Reviews)
                     {
-                        <ReviewCard review="@review" EditReview="EditReview" ReviewService="ReviewService" UpdatePage="FetchUserDetails" />
+                        <ReviewCard review="@review" EditReview="EditReview" ReviewService="ReviewService" UpdatePage="FetchUserDetails" User="User"/>
                     }
                 </ul>
             </section>
