@@ -27,5 +27,11 @@ namespace Gig.Platform.Web.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<ReviewResponseDto>();
         }
+
+        public async Task DeleteReviewAsync(Guid id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/reviews/{id}");
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

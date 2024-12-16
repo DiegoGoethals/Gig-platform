@@ -1,7 +1,6 @@
 ﻿@using System.Security.Claims;
 
 @inject IJSRuntime JSRuntime
-@inject IReviewService ReviewService
 
 <dialog @ref="dialog">
     <button @onclick="CloseDialog">X</button>
@@ -27,6 +26,8 @@
     public EventCallback UpdatePage { get; set; }
     [Parameter]
     public ReviewResponseDto review { get; set; }
+    [Parameter]
+	public IReviewService ReviewService { get; set; }
 
     private bool _isEditing;
 
