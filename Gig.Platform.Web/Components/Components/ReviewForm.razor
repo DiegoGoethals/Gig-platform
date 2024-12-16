@@ -8,28 +8,42 @@
     <form @onsubmit="SubmitReview">
         <div class="form-group">
             <label for="rating">Rating</label>
-            <input type="number" class="form-control" id="rating" min="0" max="10" step="1" required @bind="@Rating"/>
+            <input type="number" class="form-control" id="rating" min="0" max="10" step="1" required @bind="@review.Rating"/>
         </div>
         <div class="form-group">
             <label for="comment">Comment</label>
-            <textarea class="form-control" id="comment" required @bind="@Comment"/>
+            <textarea class="form-control" id="comment" required @bind="@review.Comment"/>
         </div>
-		<button type="submit" class="btn btn-primary">Submit review</button>
+        <button type="submit" class="btn btn-primary">Submit review</button>
     </form>
 </dialog>
 
 @code {
     [Parameter]
     public ClaimsPrincipal User { get; set; }
-	[Parameter]
-	public string RevieweeId { get; set; }
-	[Parameter]
-	public EventCallback UpdatePage { get; set; }
+    [Parameter]
+    public string RevieweeId { get; set; }
+    [Parameter]
+    public EventCallback UpdatePage { get; set; }
+    [Parameter]
+    public ReviewResponseDto review { get; set; }
 
-	private int Rating { get; set; }
-	private string Comment { get; set; }
+    private bool _isEditing;
 
     private ElementReference dialog;
+
+    protected override void OnParametersSet()
+    {
+        if (review != null && review.Id != Guid.Empty)
+        {
+            _isEditing = true;
+        }
+        else
+        {
+            _isEditing = false;
+            review = new ReviewResponseDto();
+        }
+    }
 
     public async Task Show()
     {
@@ -41,17 +55,24 @@
         await JSRuntime.InvokeVoidAsync("closeDialog", dialog);
     }
 
-	private async Task SubmitReview()
-	{
-		var dto = new ReviewRequestDto
-			{
+    private async Task SubmitReview()
+    {
+        var dto = new ReviewRequestDto
+            {
                 ReviewerId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value),
-				RevieweeId = Guid.Parse(RevieweeId),
-				Rating = Rating,
-				Comment = Comment
-			};
-		await ReviewService.CreateReviewAsync(dto);
-		await UpdatePage.InvokeAsync();
+                RevieweeId = Guid.Parse(RevieweeId),
+                Rating = review.Rating,
+                Comment = review.Comment
+            };
+        if (_isEditing)
+        {
+            await ReviewService.UpdateReviewAsync(review.Id, dto);
+        }
+        else
+        {
+            await ReviewService.CreateReviewAsync(dto);
+        }
+        await UpdatePage.InvokeAsync();
 		await CloseDialog();
 	}
 }

@@ -169,6 +169,8 @@ namespace Gig_Platform.Controllers
                     {
                         ReviewerId = r.ReviewerId,
                         ReviewerName = r.Reviewer.UserName,
+                        Id = r.Id,
+                        RevieweeId = r.RevieweeId,
                         Rating = r.Rating,
                         Comment = r.Comment
                     }).ToList();
