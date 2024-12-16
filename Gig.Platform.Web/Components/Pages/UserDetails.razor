@@ -3,6 +3,7 @@
 @rendermode InteractiveServer
 
 @inject IAccountService AccountService
+@inject IReviewService ReviewService
 
 <Menu User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
@@ -39,7 +40,7 @@
                 <ul class="review-list">
                     @foreach (var review in userDetails.Reviews)
                     {
-                        <ReviewCard review="@review" />
+                        <ReviewCard review="@review" EditReview="EditReview" ReviewService="ReviewService" UpdatePage="FetchUserDetails" User="User"/>
                     }
                 </ul>
             </section>
@@ -51,7 +52,7 @@
             <button class="btn btn-primary" @onclick="AddReview">Add review</button>
         }
 
-        <ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails" />
+        <ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails" review="reviewToEdit" ReviewService="ReviewService"/>
     }
 </div>
 
@@ -60,6 +61,8 @@
     public string UserId { get; set; }
 
     private UserDetailsResponseDto userDetails { get; set; }
+
+	private ReviewResponseDto reviewToEdit { get; set; }
 
     private ReviewForm reviewForm;
 
@@ -89,5 +92,10 @@
     private async Task AddReview()
     {
         await reviewForm.Show();
+    }
+
+    private async Task EditReview(ReviewResponseDto reviewResponseDto) {
+		reviewToEdit = reviewResponseDto;
+		await reviewForm.Show();
     }
 }
