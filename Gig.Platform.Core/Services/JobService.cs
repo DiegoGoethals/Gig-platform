@@ -9,15 +9,19 @@ namespace Gig.Platform.Core.Services
     {
         private readonly IJobRepository _jobRepository;
         private readonly ISkillRepository _skillRepository;
+        private readonly IUserRepository<ApplicationUser> _userRepository;
 
-        public JobService(IJobRepository jobRepository, ISkillRepository skillRepository)
+        public JobService(IJobRepository jobRepository, ISkillRepository skillRepository, IUserRepository<ApplicationUser> userRepository)
         {
             _jobRepository = jobRepository;
             _skillRepository = skillRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<ResultModel<Job>> CreateAsync(string name, string description, double salary, Guid employerId, IEnumerable<string> skills, double latitude, double longitude, string streetName, string houseNumber, string postalCode, string city)
         {
+            var employer = await _userRepository.GetByIdAsync(employerId);
+
             var job = new Job
             {
                 Id = Guid.NewGuid(),
@@ -25,6 +29,7 @@ namespace Gig.Platform.Core.Services
                 Description = description,
                 Salary = salary,
                 EmployerId = employerId,
+                Employer = employer,
                 Skills = new List<Skill>(),
                 Latitude = latitude,
                 Longitude = longitude,

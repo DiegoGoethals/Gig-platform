@@ -15,8 +15,10 @@
     {
         <h1>@Job.Name</h1>
         <p>@Job.Description</p>
-		<p>Salary: €@Job.Salary</p>
-		<p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
+        <p>Salary: €@Job.Salary</p>
+        <p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
+
+        <button @onclick="ShowForm">Edit job details</button>
 
         @if (role == "Employee")
         {
@@ -31,10 +33,12 @@
                 @foreach (var application in Applications)
                 {
                     <ApplicationCard application="application"
-                                     applicationStatuses="applicationStatuses"
-                                     OnHandleApplication="HandleApplicationAsync" />
+                    applicationStatuses="applicationStatuses"
+                    OnHandleApplication="HandleApplicationAsync" />
                 }
             </ul>
+
+            <JobForm @ref="jobForm" OnEditJob="EditJob" job="Job" User="User"/>
         }
     }
 </div>
@@ -43,13 +47,15 @@
     [Parameter]
     public string JobId { get; set; }
 
-	private string role { get; set; }
+    private string role { get; set; }
 
     private JobResponseDto Job { get; set; }
-	private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
+    private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
     private IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; } = Enumerable.Empty<ApplicationStatusDto>();
 
     private bool _isJobLoaded;
+
+    private JobForm jobForm;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,6 +77,25 @@
 				}
                 StateHasChanged();
             }
+        }
+    }
+
+    private async Task ShowForm()
+    {
+        await jobForm.Show();
+    }
+
+    private async Task EditJob(JobRequestDto job)
+    {
+        try
+        {
+            await JobService.UpdateJobAsync(Guid.Parse(JobId), job);
+            Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
+			StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error editing job: {ex.Message}");
         }
     }
 
