@@ -17,7 +17,11 @@
         <div class="user-header">
             <h1>@userDetails.UserName</h1>
             <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
-            <a class="btn btn-primary" href="/chat/@UserId">Send Message</a>
+
+            @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
+            {
+                <a class="btn btn-primary" href="/chat/@UserId">Send Message</a>
+            }            
         </div>
 
         @if (userDetails.Skills.Any())
