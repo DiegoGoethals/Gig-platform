@@ -2,15 +2,18 @@
 @inject ILocationService LocationService
 
 <div>
-	<select @onchange="OnChangeDistance">
-		<option disabled selected value="6371">--Choose the maximum distance--</option>
-		<option value="1">1 km</option>
-		<option value="5">5 km</option>
-		<option value="10">10 km</option>
-		<option value="25">25 km</option>
-		<option value="50">50 km</option>
-		<option value="100">100 km</option>
-	</select>
+	<form @onsubmit="submitFilters">
+		<select @onchange="OnChangeDistance">
+			<option disabled selected value="6371">--Choose the maximum distance--</option>
+			<option value="1">1 km</option>
+			<option value="5">5 km</option>
+			<option value="10">10 km</option>
+			<option value="25">25 km</option>
+			<option value="50">50 km</option>
+			<option value="100">100 km</option>
+		</select>
+		<button type="submit">Apply filters</button>
+	</form>
 </div>
 
 <ul id="jobs">
@@ -33,10 +36,14 @@
 		Jobs = await JobService.GetAllJobsForEmployeesAsync();
 	}
 
-	private async Task OnChangeDistance(ChangeEventArgs e)
+	private void OnChangeDistance(ChangeEventArgs e)
 	{
-		var distance = int.Parse(e.Value.ToString());
+		Distance = int.Parse(e.Value.ToString());
+	}
+
+	private async Task submitFilters()
+	{
 		var allJobs = await JobService.GetAllJobsForEmployeesAsync();
-		Jobs = allJobs.Where(j => LocationService.GetDistance(j.Latitude, j.Longitude) <= distance);
+		Jobs = allJobs.Where(j => LocationService.GetDistance(j.Latitude, j.Longitude) <= Distance);
 	}
 }
