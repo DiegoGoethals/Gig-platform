@@ -17,6 +17,7 @@
         <p>@Job.Description</p>
         <p>Salary: €@Job.Salary</p>
         <p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
+		<p>Skills: @string.Join(", ", Job.Skills.Select(s => s.Name))</p>
 
         <button @onclick="ShowForm">Edit job details</button>
 
