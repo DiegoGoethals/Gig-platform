@@ -1,6 +1,5 @@
-﻿@using System.Security.Claims;
-
-@inject IJSRuntime JSRuntime
+﻿@inject IJSRuntime JSRuntime
+@inject ISkillService SkillService
 
 <dialog @ref="dialog">
     <button @onclick="CloseDialog">X</button>
@@ -16,6 +15,15 @@
         <div class="form-group">
             <label for="salary">Salary</label>
             <input type="number" class="form-control" id="salary" min="5" step="1" required @bind="@job.Salary">
+        </div>
+        <div class="form-group">
+            <label for="skills">Skills</label>
+            <select id="skills" class="form-control mb-3" multiple @onchange="HandleSkillsChange">
+                @foreach (var skill in skills)
+                {
+                    <option value="@skill.Name">@skill.Name</option>
+                }
+            </select>
         </div>
         <div class="form-group">
             <label for="streetname">Street</label>
@@ -43,13 +51,29 @@
     [Parameter]
     public EventCallback<JobRequestDto> OnAddJob { get; set; }
     [Parameter]
-	public EventCallback<JobRequestDto> OnEditJob { get; set; }
+    public EventCallback<JobRequestDto> OnEditJob { get; set; }
     [Parameter]
-	public JobResponseDto job { get; set; }
+    public JobResponseDto job { get; set; }
+
+    private IEnumerable<SkillResponseDto> skills = new List<SkillResponseDto>();
+	private IEnumerable<string> SelectedSkills = new List<string>();
 
     private ElementReference dialog;
 
-	private bool _isEditing;
+    private bool _isEditing;
+    private bool _skillsLoaded;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender && !_skillsLoaded)
+        {
+            _skillsLoaded = true;
+
+            skills = await SkillService.GetSkillsAsync();
+        }
+	}
 
     protected override void OnParametersSet()
     {
@@ -64,6 +88,12 @@
         }
     }
 
+    private void HandleSkillsChange(ChangeEventArgs e)
+    {
+        var selectedOptions = e.Value as IEnumerable<string>;
+        SelectedSkills = selectedOptions?.ToList() ?? new List<string>();
+    }
+
     private async Task SubmitForm() 
     {
         var dto = new JobRequestDto
@@ -71,7 +101,7 @@
                 Name = job.Name,
                 Description = job.Description,
                 Salary = job.Salary,
-                Skills = new List<string>(),
+                Skills = SelectedSkills,
                 StreetName = job.StreetName,
                 HouseNumber = job.HouseNumber,
                 PostalCode = job.PostalCode,

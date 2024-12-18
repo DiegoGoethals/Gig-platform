@@ -3,6 +3,10 @@
 	<p>Salary: @Job.Salary</p>
 	<p>City: @Job.City</p>
 	<p>Distance: @distance Km</p>
+	@foreach (var skill in Job.Skills)
+	{
+		<p>@skill.Name</p>
+	}
 </li>
 
 @code {
