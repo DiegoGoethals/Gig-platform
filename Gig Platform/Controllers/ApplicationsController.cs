@@ -43,7 +43,6 @@ namespace Gig_Platform.Controllers
         }
 
         [HttpGet("job/{jobId}")]
-        [Authorize(Policy = "Employer")]
         public async Task<IActionResult> GetAllByJob(Guid jobId)
         {
             var result = await _applicationService.GetAllByJobAsync(jobId);
