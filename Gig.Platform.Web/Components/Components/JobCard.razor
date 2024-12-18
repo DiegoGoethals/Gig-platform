@@ -3,6 +3,7 @@
 	<p>Salary: @Job.Salary</p>
 	<p>City: @Job.City</p>
 	<p>Distance: @distance Km</p>
+	<p>@Applications.Count() Applications</p>
 	@foreach (var skill in Job.Skills)
 	{
 		<p>@skill.Name</p>
@@ -16,13 +17,18 @@
 	public NavigationManager NavigationManager { get; set; }
 	[Parameter]
 	public ILocationService LocationService { get; set; }
+	[Parameter]
+	public IApplicationService ApplicationService { get; set; }
+
+	private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
 
 	private int distance { get; set; }
 
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
 		var userLocation = LocationService.GetUserLocation();
 		distance = LocationService.GetDistance(Job.Latitude, Job.Longitude);
+		Applications = await ApplicationService.GetAllByJobAsync(Job.Id);
 	}
 
 	private void SeeJobDetails() {
