@@ -77,5 +77,14 @@ namespace Gig.Platform.Web.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<JobResponseDto>();
         }
+
+        public async Task DeleteJobAsync(Guid jobId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/jobs/{jobId}");
+            var token = await _jwtService.GetTokenAsync();
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

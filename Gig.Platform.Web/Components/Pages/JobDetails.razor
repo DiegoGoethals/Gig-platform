@@ -19,8 +19,6 @@
         <p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
 		<p>Skills: @string.Join(", ", Job.Skills.Select(s => s.Name))</p>
 
-        <button @onclick="ShowForm">Edit job details</button>
-
         @if (role == "Employee")
         {
             <a href="user/@Job.EmployerId">Employer: @Job.EmployerName</a>
@@ -30,6 +28,8 @@
         }
         else
         {
+            <button @onclick="ShowForm">Edit job details</button>
+			<button class="btn btn-danger" @onclick="DeleteJob">Delete job</button>
             <ul>
                 @foreach (var application in Applications)
                 {
@@ -98,6 +98,12 @@
         {
             Console.WriteLine($"Error editing job: {ex.Message}");
         }
+    }
+
+    private async Task DeleteJob()
+    {
+		await JobService.DeleteJobAsync(Guid.Parse(JobId));
+		NavigationManager.NavigateTo("/");
     }
 
     private async Task Apply()
