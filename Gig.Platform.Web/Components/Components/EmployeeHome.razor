@@ -1,5 +1,26 @@
 ﻿@inject IJobService JobService
 @inject ILocationService LocationService
+@inject ISkillService SkillService
+
+<div>
+	<form>
+		<select @onchange="OnChangeDistance">
+			<option disabled selected>--Choose the maximum distance--</option>
+			<option value="1">1 km</option>
+			<option value="5">5 km</option>
+			<option value="10">10 km</option>
+			<option value="25">25 km</option>
+			<option value="50">50 km</option>
+			<option value="100">100 km</option>
+		</select>
+		<select multiple @onchange="SelectSkills">
+			@foreach (var skill in skills)
+			{
+				<option value="@skill.Name">@skill.Name</option>
+			}
+		</select>
+	</form>
+</div>
 
 <ul id="jobs">
 	@foreach (var job in Jobs)
@@ -13,9 +34,37 @@
 	public NavigationManager NavigationManager { get; set; }
 
 	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
+	private IEnumerable<SkillResponseDto> skills { get; set; } = Enumerable.Empty<SkillResponseDto>();
+
+	private int Distance { get; set; }
+	private IEnumerable<string> SelectedSkills { get; set; } = Enumerable.Empty<string>();
 
 	protected override async Task OnInitializedAsync()
 	{
 		Jobs = await JobService.GetAllJobsForEmployeesAsync();
+		skills = await SkillService.GetSkillsAsync();
+	}
+
+	private async Task FilterJobs()
+	{
+		var allJobs = await JobService.GetAllJobsForEmployeesAsync();
+
+		Jobs = allJobs.Where(j =>
+			(Distance == int.MaxValue || LocationService.GetDistance(j.Latitude, j.Longitude) <= Distance) &&
+			(SelectedSkills.Count() == 0 || j.Skills.Any(skill => SelectedSkills.Contains(skill.Name)))
+		);
+	}
+
+	private async Task OnChangeDistance(ChangeEventArgs e)
+	{
+		Distance = int.Parse(e.Value.ToString());
+		await FilterJobs();
+	}
+
+	private async Task SelectSkills(ChangeEventArgs e)
+	{
+		var selectedOptions = e.Value as IEnumerable<string>;
+		SelectedSkills = selectedOptions?.ToList() ?? new List<string>();
+		await FilterJobs();
 	}
 }
