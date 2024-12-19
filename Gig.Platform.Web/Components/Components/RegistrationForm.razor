@@ -43,7 +43,7 @@
         {
             <div class="form-group">
                 <label for="skills">Skills</label>
-                <select id="skills" class="form-control mb-3" multiple @onchange="HandleSkillsChange">
+                <select id="skills" class="form-control mb-3 multi-select" multiple @onchange="HandleSkillsChange">
                     @foreach (var skill in skills)
                     {
                         <option value="@skill.Name">@skill.Name</option>

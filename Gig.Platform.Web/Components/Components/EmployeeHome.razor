@@ -3,7 +3,7 @@
 @inject ISkillService SkillService
 
 <div>
-	<form>
+	<form id="filter-bar">
 		<select @onchange="OnChangeDistance">
 			<option disabled selected>--Choose the maximum distance--</option>
 			<option value="1">1 km</option>
@@ -13,7 +13,7 @@
 			<option value="50">50 km</option>
 			<option value="100">100 km</option>
 		</select>
-		<select multiple @onchange="SelectSkills">
+		<select multiple @onchange="SelectSkills" class="multi-select">
 			@foreach (var skill in skills)
 			{
 				<option value="@skill.Name">@skill.Name</option>
@@ -38,7 +38,7 @@
 	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
 	private IEnumerable<SkillResponseDto> skills { get; set; } = Enumerable.Empty<SkillResponseDto>();
 
-	private int Distance { get; set; }
+	private int Distance { get; set; } = int.MaxValue;
 	private IEnumerable<string> SelectedSkills { get; set; } = Enumerable.Empty<string>();
 
 	protected override async Task OnInitializedAsync()
