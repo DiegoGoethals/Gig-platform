@@ -1,0 +1,13 @@
+﻿<header>
+	<h1>App name</h1>
+	<Menu User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
+</header>
+
+@code {
+	[Parameter]
+	public ClaimsPrincipal User { get; set; }
+	[Parameter]
+	public AuthenticationStateProvider AuthStateProvider { get; set; }
+	[Parameter]
+	public NavigationManager NavigationManager { get; set; }
+}
