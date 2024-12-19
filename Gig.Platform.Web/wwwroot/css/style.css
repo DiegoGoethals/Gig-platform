@@ -784,3 +784,10 @@ details {
     padding: 0;
     margin-top: 10px;
 }
+
+#filter-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+}
