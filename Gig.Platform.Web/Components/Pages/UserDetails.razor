@@ -42,6 +42,10 @@
             <section class="user-reviews">
                 <h2>Reviews</h2>
                 <ul class="review-list">
+                    @if (currentUserReview != null)
+                    {
+                        <ReviewCard review="@currentUserReview" EditReview="EditReview" ReviewService="ReviewService" UpdatePage="FetchUserDetails" User="User"/>
+                    }
                     @foreach (var review in userDetails.Reviews)
                     {
                         <ReviewCard review="@review" EditReview="EditReview" ReviewService="ReviewService" UpdatePage="FetchUserDetails" User="User"/>
@@ -65,8 +69,9 @@
     public string UserId { get; set; }
 
     private UserDetailsResponseDto userDetails { get; set; }
+    private ReviewResponseDto currentUserReview;
 
-	private ReviewResponseDto reviewToEdit { get; set; }
+    private ReviewResponseDto reviewToEdit { get; set; }
 
     private ReviewForm reviewForm;
 
@@ -90,6 +95,11 @@
     private async Task FetchUserDetails()
     {
         userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
+		if (userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
+		{
+			currentUserReview = userDetails.Reviews.First(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+			userDetails.Reviews.Remove(currentUserReview);
+		}
         StateHasChanged();
     }
 
