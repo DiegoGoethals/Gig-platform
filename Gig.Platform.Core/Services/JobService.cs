@@ -146,7 +146,7 @@ namespace Gig.Platform.Core.Services
             };
         }
 
-        public async Task<ResultModel<Job>> UpdateAsync(Guid id, string name, string description, double salary, IEnumerable<string> skills)
+        public async Task<ResultModel<Job>> UpdateAsync(Guid id, string name, string description, double salary, IEnumerable<string> skills, double latitude, double longitude, string streetName, string houseNumber, string postalCode, string city)
         {
             var job = await _jobRepository.GetByIdAsync(id);
             if (job == null)
@@ -162,6 +162,12 @@ namespace Gig.Platform.Core.Services
             job.Description = description;
             job.Salary = salary;
             job.Skills = new List<Skill>();
+            job.Latitude = latitude;
+            job.Longitude = longitude;
+            job.StreetName = streetName;
+            job.HouseNumber = houseNumber;
+            job.PostalCode = postalCode;
+            job.City = city;
 
             foreach (var skillName in skills)
             {

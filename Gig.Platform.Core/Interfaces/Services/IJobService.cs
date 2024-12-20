@@ -14,7 +14,7 @@ namespace Gig.Platform.Core.Interfaces.Services
         Task<ResultModel<IEnumerable<Job>>> GetAllAsync();
         Task<ResultModel<IEnumerable<Job>>> GetBySkills(IEnumerable<string> skills);
         Task<ResultModel<Job>> GetByIdAsync(Guid id);
-        Task<ResultModel<Job>> UpdateAsync(Guid id, string name, string description, double salary, IEnumerable<string> skills);
+        Task<ResultModel<Job>> UpdateAsync(Guid id, string name, string description, double salary, IEnumerable<string> skills, double latitude, double longitude, string streetName, string houseNumber, string postalCode, string city);
         Task<ResultModel<IEnumerable<Job>>> GetAllByEmployerAsync(Guid employerId);
         Task<ResultModel<IEnumerable<Job>>> GetAllByDistance(double latitude, double longitude, double distance);
     }
