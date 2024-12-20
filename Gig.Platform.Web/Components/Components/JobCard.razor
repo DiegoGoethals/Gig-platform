@@ -8,6 +8,10 @@
 	{
 		<p>@skill.Name</p>
 	}
+	@if (hasApplied)
+	{
+		<p>You have already applied to this job</p>
+	}
 </li>
 
 @code {
@@ -19,16 +23,20 @@
 	public ILocationService LocationService { get; set; }
 	[Parameter]
 	public IApplicationService ApplicationService { get; set; }
+	[Parameter]
+	public ClaimsPrincipal User { get; set; }
 
 	private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
 
 	private int distance { get; set; }
+	private bool hasApplied { get; set; } = false;
 
 	protected override async Task OnInitializedAsync()
 	{
 		var userLocation = LocationService.GetUserLocation();
 		distance = LocationService.GetDistance(Job.Latitude, Job.Longitude);
 		Applications = await ApplicationService.GetAllByJobAsync(Job.Id);
+		hasApplied = Applications.Any(a => a.CandidateId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
 	}
 
 	private void SeeJobDetails() {
