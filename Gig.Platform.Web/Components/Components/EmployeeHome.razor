@@ -25,7 +25,7 @@
 <ul id="jobs">
 	@foreach (var job in Jobs)
 	{
-		<JobCard Job="job" NavigationManager="NavigationManager" LocationService="LocationService" ApplicationService="ApplicationService" />
+		<JobCard User="User" Job="job" NavigationManager="NavigationManager" LocationService="LocationService" ApplicationService="ApplicationService" />
 	}
 </ul>
 
@@ -34,6 +34,8 @@
 	public NavigationManager NavigationManager { get; set; }
 	[Parameter]
 	public IApplicationService ApplicationService { get; set; }
+	[Parameter]
+	public ClaimsPrincipal User { get; set; }
 
 	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
 	private IEnumerable<SkillResponseDto> skills { get; set; } = Enumerable.Empty<SkillResponseDto>();

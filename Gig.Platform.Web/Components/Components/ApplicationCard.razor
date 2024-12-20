@@ -1,19 +1,22 @@
 ﻿<li class="application-card">
     <a href="user/@application.CandidateId">@application.CandidateName</a>
     <p>@application.ApplicationStatus</p>
-    <div>
-        @foreach (var status in applicationStatuses)
-        {
-            if (status.Name == "Approved")
+	@if (role == "Employer")
+	{
+        <div>
+            @foreach (var status in applicationStatuses)
             {
-                <button class="btn btn-success" @onclick="() => HandleApplicationAsync(status)">Accept</button>
+                if (status.Name == "Approved")
+                {
+                    <button class="btn btn-success" @onclick="() => HandleApplicationAsync(status)">Accept</button>
+                }
+                else if (status.Name == "Rejected")
+                {
+                    <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(status)">Reject</button>
+                }
             }
-            else if (status.Name == "Rejected")
-            {
-                <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(status)">Reject</button>
-            }
-        }
-    </div>
+        </div>
+	}
 </li>
 
 @code {
@@ -23,6 +26,8 @@
 	public IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; }
     [Parameter]
     public EventCallback<(Guid applicationId, ApplicationStatusDto status)> OnHandleApplication { get; set; }
+	[Parameter]
+	public string role { get; set; }
 
     private async Task HandleApplicationAsync(ApplicationStatusDto status)
     {

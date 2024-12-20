@@ -18,23 +18,28 @@
         <p>@Job.Description</p>
         <p>Salary: €@Job.Salary</p>
         <p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
-		<p>Skills: @string.Join(", ", Job.Skills.Select(s => s.Name))</p>
+        <p>Skills: @string.Join(", ", Job.Skills.Select(s => s.Name))</p>
 
-        @if (role == "Employee")
+        @if (role == "Employee" && Application == null)
         {
             <a href="user/@Job.EmployerId">Employer: @Job.EmployerName</a>
             <div>
                 <button class="btn btn-primary" @onclick="Apply">Apply</button>
             </div>
         }
+		else if (role == "Employee" && Application != null)
+        {
+			<ApplicationCard role="@role" application="Application" applicationStatuses="applicationStatuses"/>
+        }
         else
         {
             <button @onclick="ShowForm">Edit job details</button>
-			<button class="btn btn-danger" @onclick="DeleteJob">Delete job</button>
+            <button class="btn btn-danger" @onclick="DeleteJob">Delete job</button>
             <ul>
                 @foreach (var application in Applications)
                 {
                     <ApplicationCard application="application"
+                        role="@role"
                     applicationStatuses="applicationStatuses"
                     OnHandleApplication="HandleApplicationAsync" />
                 }
@@ -54,6 +59,7 @@
     private JobResponseDto Job { get; set; }
     private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
     private IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; } = Enumerable.Empty<ApplicationStatusDto>();
+    private ApplicationResponseDto Application { get; set; }
 
     private bool _isJobLoaded;
 
@@ -62,7 +68,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-		role = User.Claims.First(c => c.Type.Contains("role")).Value;
+        role = User.Claims.First(c => c.Type.Contains("role")).Value;
 
         if (firstRender && !_isJobLoaded)
         {
@@ -71,12 +77,17 @@
             if (!string.IsNullOrEmpty(JobId))
             {
                 Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
-                
-				if (role != "Employee")
-				{
-					Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
-					applicationStatuses = await ApplicationService.GetAllStatusesAsync();
-				}
+
+                if (role != "Employee")
+                {
+                    Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
+                    applicationStatuses = await ApplicationService.GetAllStatusesAsync();
+                }
+                else {
+                    var allApplications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
+					var candidateId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
+					Application = allApplications.FirstOrDefault(a => a.CandidateId == candidateId);
+                }
                 StateHasChanged();
             }
         }
