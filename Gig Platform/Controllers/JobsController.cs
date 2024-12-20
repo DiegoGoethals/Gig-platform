@@ -221,7 +221,60 @@ namespace Gig_Platform.Controllers
         [Authorize(Policy = "Employer")]
         public async Task<IActionResult> Update(Guid id, JobRequestDto jobRequestDto)
         {
-            var result = await _jobService.UpdateAsync(id, jobRequestDto.Name, jobRequestDto.Description, jobRequestDto.Salary, jobRequestDto.Skills);
+            if (jobRequestDto.Latitude == null || jobRequestDto.Longitude == null)
+            {
+                var (latitude, longitude) = await _geocodingService.GeocodeAddressAsync(
+                    jobRequestDto.StreetName,
+                    jobRequestDto.HouseNumber,
+                    jobRequestDto.PostalCode,
+                    jobRequestDto.City
+                );
+
+                if (latitude == null || longitude == null)
+                {
+                    return BadRequest("Unable to geocode the provided address.");
+                }
+
+                jobRequestDto.Latitude = (double)latitude;
+                jobRequestDto.Longitude = (double)longitude;
+            }
+
+            else if (string.IsNullOrWhiteSpace(jobRequestDto.StreetName) || string.IsNullOrWhiteSpace(jobRequestDto.City))
+            {
+                var geocodedAddress = await _geocodingService.ReverseGeocodeAsync(jobRequestDto.Latitude.Value, jobRequestDto.Longitude.Value);
+
+                if (geocodedAddress == null)
+                {
+                    return BadRequest("Unable to reverse geocode the provided coordinates.");
+                }
+
+                jobRequestDto.StreetName = geocodedAddress.StreetName;
+                jobRequestDto.HouseNumber = geocodedAddress.HouseNumber;
+                jobRequestDto.PostalCode = geocodedAddress.PostalCode;
+                jobRequestDto.City = geocodedAddress.City;
+
+                // Validate extracted fields
+                if (string.IsNullOrWhiteSpace(jobRequestDto.StreetName) ||
+                        string.IsNullOrWhiteSpace(jobRequestDto.PostalCode) ||
+                        string.IsNullOrWhiteSpace(jobRequestDto.City))
+                {
+                    return BadRequest("Insufficient address details from reverse geocoding.");
+                }
+            }
+
+            var result = await _jobService.UpdateAsync(
+                id,
+                jobRequestDto.Name,
+                jobRequestDto.Description,
+                jobRequestDto.Salary,
+                jobRequestDto.Skills,
+                jobRequestDto.Latitude.Value,
+                jobRequestDto.Longitude.Value,
+                jobRequestDto.StreetName,
+                jobRequestDto.HouseNumber,
+                jobRequestDto.PostalCode,
+                jobRequestDto.City
+                );
             if (result.IsSucces)
             {
                 return Ok(new JobResponseDto
