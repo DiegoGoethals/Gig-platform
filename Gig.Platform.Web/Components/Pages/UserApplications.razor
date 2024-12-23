@@ -12,7 +12,7 @@
 		@foreach (var application in applications)
 		{
 			<li class="application-card">
-				<p>@application.JobTitle</p>
+				<a href="job/@application.JobId">@application.JobTitle</a>
 				<p>@application.ApplicationStatus</p>
 			</li>
 		}
