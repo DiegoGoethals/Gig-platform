@@ -1,0 +1,43 @@
+﻿@page "/user-applications"
+@rendermode InteractiveServer
+
+@inherits SecurePageBase
+
+@inject IApplicationService _applicationService
+
+<Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
+
+<div class="applications-container">
+	<ul class="applications">
+		@foreach (var application in applications)
+		{
+			<li class="application-card">
+				<a href="job/@application.JobId">@application.JobTitle</a>
+				<p>@application.ApplicationStatus</p>
+			</li>
+		}
+	</ul>
+</div>
+
+@code {
+	private IEnumerable<ApplicationResponseDto> applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
+
+	private bool _applicationsLoaded;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await base.OnAfterRenderAsync(firstRender);
+
+		if (firstRender && !_applicationsLoaded)
+		{
+			_applicationsLoaded = true;
+			await FetchApplications();
+		}
+	}
+
+	private async Task FetchApplications()
+	{
+		applications = await _applicationService.GetAllByCandidateAsync(Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+		StateHasChanged();
+	}
+}

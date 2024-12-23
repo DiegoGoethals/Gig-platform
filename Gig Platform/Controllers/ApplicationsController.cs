@@ -83,6 +83,7 @@ namespace Gig_Platform.Controllers
                 {
                     Id = a.Id,
                     JobId = a.JobId,
+                    JobTitle = a.Job.Name,
                     CandidateId = a.CandidateId,
                     ApplicationStatus = a.Status.Name
                 }));
