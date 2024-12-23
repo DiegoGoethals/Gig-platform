@@ -13,7 +13,7 @@
 		{
 			<li class="application-card">
 				<a href="job/@application.JobId">@application.JobTitle</a>
-				<p>@application.ApplicationStatus</p>
+				<p class="@(application.ApplicationStatus.ToLower())">@application.ApplicationStatus</p>
 			</li>
 		}
 	</ul>

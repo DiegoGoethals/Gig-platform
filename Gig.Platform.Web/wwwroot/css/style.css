@@ -842,3 +842,15 @@ details {
         .multi-select::-webkit-scrollbar-thumb:hover {
             background-color: #aaa;
         }
+
+.approved {
+    color: lawngreen!important;
+}
+
+.pending {
+    color: darkorange!important;
+}
+
+.rejected {
+    color: red!important;
+}
