@@ -1,6 +1,6 @@
 ﻿<li class="application-card">
     <a href="user/@application.CandidateId">@application.CandidateName</a>
-    <p>@application.ApplicationStatus</p>
+    <p class="@(application.ApplicationStatus.ToLower())">@application.ApplicationStatus</p>
 	@if (role == "Employer")
 	{
         <div>
