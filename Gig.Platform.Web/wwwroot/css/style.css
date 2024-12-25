@@ -184,7 +184,12 @@ button {
     background-color: #e9ecef;
     color: #333;
     border-radius: 5px;
-    font-size: 0.8rem;
+    font-size: 0.8rem!important;
+}
+
+.job-applied {
+    color: #28a745!important;
+    font-size: .8rem!important;
 }
 
 /* Button Styling */
