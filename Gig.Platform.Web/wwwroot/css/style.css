@@ -174,8 +174,18 @@ button {
             text-align: left;
             font-size: 0.9rem;
             color: #666;
-            margin: 0.3rem 0;
+            margin: 0.3rem .2rem;
         }
+
+.job-skill {
+    display: inline-block;
+    padding: 0.3rem 0.5rem;
+    margin: 0.3rem 0.3rem 0.3rem 0;
+    background-color: #e9ecef;
+    color: #333;
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
 
 /* Button Styling */
 button.btn-primary {

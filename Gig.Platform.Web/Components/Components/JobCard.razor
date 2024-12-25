@@ -6,11 +6,11 @@
 	<p>@Applications.Count() Applications</p>
 	@foreach (var skill in Job.Skills)
 	{
-		<p>@skill.Name</p>
+		<p class="job-skill">@skill.Name</p>
 	}
 	@if (hasApplied)
 	{
-		<p>You have already applied to this job</p>
+		<p class="job-applied">You have already applied to this job</p>
 	}
 </li>
 
