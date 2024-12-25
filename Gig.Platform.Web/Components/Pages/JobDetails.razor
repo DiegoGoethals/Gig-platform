@@ -18,7 +18,15 @@
         <p>@Job.Description</p>
         <p>Salary: €@Job.Salary</p>
         <p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
-        <p>Skills: @string.Join(", ", Job.Skills.Select(s => s.Name))</p>
+        <p class="job-skills">
+            Skills:
+            @foreach (var skill in Job.Skills)
+            {
+                <span>@skill.Name</span>
+
+                @((Job.Skills.Last() != skill) ? ", " : "")
+            }
+        </p>
 
         @if (role == "Employee" && Application == null)
         {
