@@ -9,6 +9,6 @@ namespace Gig.Platform.Core.Interfaces.Repositories
     public interface IMessageRepository : IBaseRepository<Message>
     {
         Task<IEnumerable<Message>> GetConversationAsync(Guid id1, Guid id2);
-        Task<IEnumerable<ApplicationUser>> GetAllConversationPartnersAsync(Guid userId);
+        Task<IEnumerable<(ApplicationUser Partner, Message LastMessage)>> GetAllConversationPartnersAsync(Guid userId);
     }
 }

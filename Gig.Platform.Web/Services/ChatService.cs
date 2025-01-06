@@ -6,11 +6,11 @@ namespace Gig.Platform.Web.Services
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<IEnumerable<AccountResponseDto>> GetChatPartnersAsync(Guid id)
+        public async Task<IEnumerable<MessagePartnerDto>> GetChatPartnersAsync(Guid id)
         {
             var response = await _httpClient.GetAsync($"api/messages/partners/{id}");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<IEnumerable<AccountResponseDto>>();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<MessagePartnerDto>>();
         }
 
         public async Task<MessageResponseDto> SendMessageAsync(MessageRequestDto messageRequestDto)

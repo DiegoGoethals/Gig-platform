@@ -14,6 +14,6 @@ namespace Gig.Platform.Core.Interfaces.Services
         Task<ResultModel<Message>> DeleteAsync(Guid id);
         Task<ResultModel<Message>> GetByIdAsync(Guid id);
         Task<ResultModel<IEnumerable<Message>>> GetConversationAsync(Guid id1, Guid id2);
-        Task<ResultModel<IEnumerable<ApplicationUser>>> GetAllConversationPartnersAsync(Guid userId);
+        Task<ResultModel<IEnumerable<(ApplicationUser Partner, Message LastMessage)>>> GetAllConversationPartnersAsync(Guid userId);
     }
 }

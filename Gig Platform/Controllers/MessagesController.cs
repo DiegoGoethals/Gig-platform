@@ -95,10 +95,12 @@ namespace Gig_Platform.Controllers
             var result = await _messageService.GetAllConversationPartnersAsync(id);
             if (result.IsSucces)
             {
-                return Ok(result.Value.Select(x => new AccountResponseDto
+                return Ok(result.Value.Select(x => new MessagePartnerDto
                 {
-                    Id = x.Id,
-                    UserName = x.UserName
+                    UserId = x.Partner.Id,
+                    UserName = x.Partner.UserName,
+                    LastMessage = x.LastMessage.Content,
+                    LastMessageDate = x.LastMessage.Created
                 }));
             }
             return HandleError(result.Errors);

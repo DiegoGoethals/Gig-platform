@@ -27,7 +27,7 @@ namespace Gig.Platform.Infrastructure.Repositories
             .ToListAsync();
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetAllConversationPartnersAsync(Guid userId)
+        public async Task<IEnumerable<(ApplicationUser Partner, Message LastMessage)>> GetAllConversationPartnersAsync(Guid userId)
         {
             var messages = await _table
                 .Where(x => x.SenderId == userId || x.ReceiverId == userId)
@@ -36,13 +36,16 @@ namespace Gig.Platform.Infrastructure.Repositories
                 .OrderByDescending(x => x.Created)
                 .ToListAsync();
 
-            var conversationPartners = messages
-                .SelectMany(m => new[] { m.Sender, m.Receiver })
-                .Where(u => u.Id != userId)
-                .Distinct()
+            var conversationPartnersWithLastMessages = messages
+                .Where(m => m.SenderId != userId || m.ReceiverId != userId)
+                .GroupBy(m => m.SenderId == userId ? m.Receiver : m.Sender)
+                .Select(g => (
+                    Partner: g.Key,
+                    LastMessage: g.First()
+                ))
                 .ToList();
 
-            return conversationPartners;
+            return conversationPartnersWithLastMessages;
         }
     }
 }

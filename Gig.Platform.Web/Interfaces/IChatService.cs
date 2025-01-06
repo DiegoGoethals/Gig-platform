@@ -2,7 +2,7 @@
 {
     public interface IChatService
     {
-        Task<IEnumerable<AccountResponseDto>> GetChatPartnersAsync(Guid id);
+        Task<IEnumerable<MessagePartnerDto>> GetChatPartnersAsync(Guid id);
         Task<MessageResponseDto> SendMessageAsync(MessageRequestDto messageRequestDto);
         Task<IEnumerable<MessageResponseDto>> GetConversationAsync(Guid id1, Guid id2);
     }

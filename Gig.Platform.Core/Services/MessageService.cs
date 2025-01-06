@@ -152,19 +152,19 @@ namespace Gig.Platform.Core.Services
             };
         }
 
-        public async Task<ResultModel<IEnumerable<ApplicationUser>>> GetAllConversationPartnersAsync(Guid userId)
+        public async Task<ResultModel<IEnumerable<(ApplicationUser Partner, Message LastMessage)>>> GetAllConversationPartnersAsync(Guid userId)
         {
 
             var users = await _messageRepository.GetAllConversationPartnersAsync(userId);
             if (users != null)
             {
-                return new ResultModel<IEnumerable<ApplicationUser>>
+                return new ResultModel<IEnumerable<(ApplicationUser Partner, Message LastMessage)>>
                 {
                     IsSucces = true,
                     Value = users
                 };
             }
-            return new ResultModel<IEnumerable<ApplicationUser>>
+            return new ResultModel<IEnumerable<(ApplicationUser Partner, Message LastMessage)>>
             {
                 IsSucces = false,
                 Errors = new List<string>
