@@ -34,7 +34,10 @@
             <div class="chat-messages">
                 @foreach (var message in _messages)
                 {
-                    <div class="message @(message.SenderId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value) ? "sender" : "receiver")">@message.Content</div>
+                    <div class="message @(message.SenderId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value) ? "sender" : "receiver")">
+                        <p>@message.Content</p>
+                        <p class="message-time">@message.Created.ToString("dd/MM/yy HH:mm")</p>
+                    </div>
                 }
             </div>
             <div class="chat-input">
