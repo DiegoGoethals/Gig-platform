@@ -15,7 +15,7 @@
         <ul>
             @foreach (var chat in _chats)
             {
-                <li @onclick="() => SelectChat(chat.Id)" class="@(_selectedChat?.Id == chat.Id ? "active" : "")">
+                <li @onclick="() => SelectChat(chat.UserId)" class="@(_selectedChat?.UserId == chat.UserId ? "active" : "")">
                     <div class="chat-item">
                         <strong>@chat.UserName</strong>
                         <!-- Should be the last send message here e.g. <p>chat.LastMessage</p>-->
@@ -56,8 +56,8 @@
     [Parameter]
     public Guid? id { get; set; }
 
-    private IEnumerable<AccountResponseDto> _chats = new List<AccountResponseDto>();
-    private AccountResponseDto _selectedChat;
+    private IEnumerable<MessagePartnerDto> _chats = new List<MessagePartnerDto>();
+    private MessagePartnerDto _selectedChat;
     private IEnumerable<MessageResponseDto> _messages = new List<MessageResponseDto>();
     private MessageRequestDto _newMessage = new MessageRequestDto();
     private bool _chatsLoaded;
@@ -78,13 +78,13 @@
     {
         if (id.HasValue)
         {
-            if (_chats.Any(c => c.Id == id.Value)) {
-                _selectedChat = _chats.FirstOrDefault(c => c.Id == id.Value);
+            if (_chats.Any(c => c.UserId == id.Value)) {
+                _selectedChat = _chats.FirstOrDefault(c => c.UserId == id.Value);
             }
             else
             {
                 var details = await _accountService.GetUserDetailsAsync(id.Value);
-                _selectedChat = new AccountResponseDto { Id = details.Id, UserName = details.UserName };
+                _selectedChat = new MessagePartnerDto { UserId = details.Id, UserName = details.UserName };
                 _chats.Append(_selectedChat);
             }
         }
@@ -102,7 +102,7 @@
         var userId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
         if (_selectedChat != null)
         {
-            _messages = await _chatService.GetConversationAsync(userId, _selectedChat.Id);
+            _messages = await _chatService.GetConversationAsync(userId, _selectedChat.UserId);
             StateHasChanged();
         }
     }
@@ -111,7 +111,7 @@
     {
         var userId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
         _newMessage.SenderId = userId;
-        _newMessage.ReceiverId = _selectedChat?.Id ?? Guid.Empty;
+        _newMessage.ReceiverId = _selectedChat?.UserId ?? Guid.Empty;
         await _chatService.SendMessageAsync(_newMessage);
         _newMessage.Content = string.Empty;
         await FetchMessages();
@@ -120,7 +120,7 @@
 
     private async Task SelectChat(Guid chatId)
     {
-        _selectedChat = _chats.FirstOrDefault(c => c.Id == chatId);
+        _selectedChat = _chats.FirstOrDefault(c => c.UserId == chatId);
         if (_selectedChat != null)
         {
             await FetchMessages();
