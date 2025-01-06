@@ -18,7 +18,7 @@
                 <li @onclick="() => SelectChat(chat.UserId)" class="@(_selectedChat?.UserId == chat.UserId ? "active" : "")">
                     <div class="chat-item">
                         <strong>@chat.UserName</strong>
-						<p>@chat.LastMessage @chat.LastMessageDate.ToString("dd/MM/yy HH:mm")</p>
+                        <p>@chat.LastMessage <span class="last-message-time">@chat.LastMessageDate.ToString("dd/MM/yy HH:mm")</span></p>
                     </div>
                 </li>
             }
