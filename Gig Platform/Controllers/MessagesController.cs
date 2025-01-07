@@ -100,7 +100,8 @@ namespace Gig_Platform.Controllers
                     UserId = x.Partner.Id,
                     UserName = x.Partner.UserName,
                     LastMessage = x.LastMessage.Content,
-                    LastMessageDate = x.LastMessage.Created
+                    LastMessageDate = x.LastMessage.Created,
+                    LastMessageSenderId = x.LastMessage.SenderId
                 }));
             }
             return HandleError(result.Errors);
