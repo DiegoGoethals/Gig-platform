@@ -73,10 +73,20 @@ namespace Gig.Platform.Web.Components.Pages
             StateHasChanged();
         }
 
-        private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+        private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
         {
-            User = (await task).User;
-            StateHasChanged();
+            Task.Run(async () =>
+            {
+                try
+                {
+                    User = (await task).User;
+                    StateHasChanged();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in OnAuthenticationStateChanged: {ex.Message}");
+                }
+            });
         }
 
         public void Dispose()
