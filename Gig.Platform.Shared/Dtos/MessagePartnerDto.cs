@@ -12,5 +12,6 @@ namespace Gig.Platform.Shared.Dtos
         public string UserName { get; set; }
         public string LastMessage { get; set; }
         public DateTime LastMessageDate { get; set; }
+        public Guid LastMessageSenderId { get; set; }
     }
 }
