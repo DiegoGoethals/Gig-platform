@@ -32,6 +32,7 @@
             <label for="birthday">Birthday</label>
             <input type="date" class="form-control" id="birthday" required @bind="@Birthday">
         </div>
+		<InputFile OnChange="HandleFileSelected" class="form-control" id="profilePicture" accept="image/*" />
         <div class="form-group">
             <label for="role">Role</label>
             <select id="role" class="form-control mb-3" required @bind="@Role">
@@ -67,6 +68,7 @@
 	public DateTime Birthday { get; set; } = DateTime.Now;
     public string Role { get; set; } = "Employer";
     public List<string> SelectedSkills { get; set; } = new List<string>();
+    public byte[] FileData { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -90,7 +92,8 @@
 			Lastname = LastName,
 			Birthday = Birthday,
 			Role = Role,
-			Skills = SelectedSkills
+			Skills = SelectedSkills,
+			FileData = FileData
 		};
 
 		if (Password != ConfirmPassword)
@@ -101,5 +104,21 @@
 
 		var result = await AccountService.RegisterAsync(dto);
 		NavigationManager.NavigateTo("/");
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var uploading = true;
+
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+
+			FileData = buffer;
+
+            uploading = false;
+        }
     }
 }

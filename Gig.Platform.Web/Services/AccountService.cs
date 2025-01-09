@@ -9,6 +9,7 @@ namespace Gig.Platform.Web.Services
         public async Task<RegistrationResponseDto> RegisterAsync(RegistrationRequestDto dto)
         {
             var response = await _httpClient.PostAsync("api/auth/register", JsonContent.Create(dto));
+            Console.WriteLine(response.StatusCode);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<RegistrationResponseDto>();
         }
