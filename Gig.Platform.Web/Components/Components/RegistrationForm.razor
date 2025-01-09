@@ -69,6 +69,7 @@
     public string Role { get; set; } = "Employer";
     public List<string> SelectedSkills { get; set; } = new List<string>();
     public byte[] FileData { get; set; }
+	public string FileExtension { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -93,7 +94,8 @@
 			Birthday = Birthday,
 			Role = Role,
 			Skills = SelectedSkills,
-			FileData = FileData
+			FileData = FileData,
+			FileExtension = FileExtension
 		};
 
 		if (Password != ConfirmPassword)
@@ -111,14 +113,12 @@
         var file = e.File;
         if (file != null)
         {
-            var uploading = true;
 
             var buffer = new byte[file.Size];
             await file.OpenReadStream().ReadAsync(buffer);
 
 			FileData = buffer;
-
-            uploading = false;
+			FileExtension = Path.GetExtension(file.Name);
         }
     }
 }

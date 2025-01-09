@@ -11,5 +11,6 @@
         public IEnumerable<string> Skills { get; set; }
         public DateTime Birthday { get; set; }
         public byte[] FileData { get; set; }
+        public string FileExtension { get; set; }
     }
 }

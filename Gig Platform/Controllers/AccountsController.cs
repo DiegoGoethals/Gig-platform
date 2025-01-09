@@ -98,7 +98,7 @@ namespace Gig_Platform.Controllers
                     Created = DateTime.Now,
                     Updated = DateTime.Now,
                     Birthday = registrationRequestDto.Birthday,
-                    ProfilePicture = await _supabaseStorageService.UploadFileAsync(registrationRequestDto.UserName, registrationRequestDto.FileData)
+                    ProfilePicture = await _supabaseStorageService.UploadFileAsync($"{registrationRequestDto.UserName}{registrationRequestDto.FileExtension}", registrationRequestDto.FileData)
                 };
 
                 var registrationResult = await _accountService.Register(user, registrationRequestDto.Skills);
