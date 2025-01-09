@@ -32,7 +32,7 @@
             <label for="birthday">Birthday</label>
             <input type="date" class="form-control" id="birthday" required @bind="@Birthday">
         </div>
-		<InputFile OnChange="HandleFileSelected" class="form-control" id="profilePicture" accept="image/*" />
+        <InputFile OnChange="HandleFileSelected" class="form-control" id="profilePicture" accept="image/*" />
         <div class="form-group">
             <label for="role">Role</label>
             <select id="role" class="form-control mb-3" required @bind="@Role">
@@ -54,22 +54,32 @@
         }
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
+
+	@if (_isRegistring)
+	{
+		<div class="loader">
+			<span class="sr-only">Loading...</span>
+		</div>
+	}
+
 </div>
 
 @code {
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
-	public string Username { get; set; }
+    public string Username { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
     public string ConfirmPassword { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-	public DateTime Birthday { get; set; } = DateTime.Now;
+    public DateTime Birthday { get; set; } = DateTime.Now;
     public string Role { get; set; } = "Employer";
     public List<string> SelectedSkills { get; set; } = new List<string>();
     public byte[] FileData { get; set; }
-	public string FileExtension { get; set; }
+    public string FileExtension { get; set; }
+
+    private bool _isRegistring = false;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -84,6 +94,8 @@
 
     public async Task Register()
     {
+		_isRegistring = true;
+
 		var dto = new RegistrationRequestDto
 		{
 			UserName = Username,
@@ -105,6 +117,9 @@
 		}
 
 		var result = await AccountService.RegisterAsync(dto);
+
+		_isRegistring = false;
+
 		NavigationManager.NavigateTo("/");
     }
 
