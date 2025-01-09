@@ -3,7 +3,6 @@ using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services;
 using Gig.Platform.Infrastructure.Data;
 using Gig.Platform.Infrastructure.Repositories;
-using MailKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -71,8 +70,13 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddTransient<Gig.Platform.Core.Interfaces.Services.IMailService, Gig.Platform.Core.Services.MailService>();
+builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddHttpClient<GeocodingService>();
+builder.Services.AddSingleton(new SupabaseStorageService(
+    builder.Configuration["Supabase:Url"],
+    builder.Configuration["Supabase:ApiKey"],
+    builder.Configuration["Supabase:BucketName"]
+));
 
 builder.Services.AddAuthorization(options =>
 {

@@ -22,5 +22,7 @@ namespace Gig.Platform.Shared.Entities
         public ICollection<Message> ReceivedMessages { get; set; }
         public ICollection<Review> MadeReviews { get; set; }
         public ICollection<Review> ReceivedReviews { get; set; }
+        public string ProfilePicture { get; set; }
+        public string Bio { get; set; }
     }
 }

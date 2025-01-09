@@ -1,4 +1,5 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
+using Gig.Platform.Core.Services;
 using MailKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -22,8 +23,9 @@ namespace Gig_Platform.Controllers
         private readonly Gig.Platform.Core.Interfaces.Services.IMailService _mailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
+        private readonly SupabaseStorageService _supabaseStorageService;
 
-        public AccountsController(IAccountService accountService, IReviewService reviewService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, Gig.Platform.Core.Interfaces.Services.IMailService mailService, IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator)
+        public AccountsController(IAccountService accountService, IReviewService reviewService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, Gig.Platform.Core.Interfaces.Services.IMailService mailService, IHttpContextAccessor httpContextAccessor, LinkGenerator linkGenerator, SupabaseStorageService supabaseStorageService)
         {
             _accountService = accountService;
             _reviewService = reviewService;
@@ -33,6 +35,7 @@ namespace Gig_Platform.Controllers
             _mailService = mailService;
             _httpContextAccessor = httpContextAccessor;
             _linkGenerator = linkGenerator;
+            _supabaseStorageService = supabaseStorageService;
         }
 
         [HttpPost]
@@ -94,7 +97,9 @@ namespace Gig_Platform.Controllers
                     Skills = new List<Skill>(),
                     Created = DateTime.Now,
                     Updated = DateTime.Now,
-                    Birthday = registrationRequestDto.Birthday
+                    Birthday = registrationRequestDto.Birthday,
+                    ProfilePicture = await _supabaseStorageService.UploadFileAsync($"{registrationRequestDto.UserName}{registrationRequestDto.FileExtension}", registrationRequestDto.FileData),
+                    Bio = registrationRequestDto.Bio
                 };
 
                 var registrationResult = await _accountService.Register(user, registrationRequestDto.Skills);
