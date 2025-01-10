@@ -776,6 +776,13 @@ details {
     direction: rtl;
 }
 
+    .profile-summary img {
+        height: 36px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 50%;
+    }
+
 .profile-options {
     list-style-type: none;
     padding: 0;
@@ -825,6 +832,13 @@ details {
     .user-header h1 {
         font-size: 2rem;
         color: #333;
+    }
+
+    .user-header img {
+        height: 200px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 50%;
     }
 
 .member-since {

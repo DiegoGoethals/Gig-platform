@@ -15,8 +15,14 @@
     else
     {
         <div class="user-header">
+            <img src="@userDetails.ProfilePictureUrl" alt="@userDetails.UserName profile picture"/>
             <h1>@userDetails.UserName</h1>
             <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
+            @if (!string.IsNullOrEmpty(userDetails.Bio))
+            {
+                <h3>Bio</h3>
+				<p class="user-bio">@userDetails.Bio</p>
+			}
 
             @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
             {
