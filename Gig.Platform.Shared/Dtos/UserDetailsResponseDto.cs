@@ -8,5 +8,6 @@
         public ICollection<string> Skills { get; set; }
         public ICollection<ReviewResponseDto> Reviews { get; set; }
         public string ProfilePictureUrl { get; set; }
+        public string Bio { get; set; }
     }
 }

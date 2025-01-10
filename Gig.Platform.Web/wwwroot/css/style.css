@@ -834,6 +834,13 @@ details {
         color: #333;
     }
 
+    .user-header img {
+        height: 200px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 50%;
+    }
+
 .member-since {
     color: #777;
     font-size: 1rem;

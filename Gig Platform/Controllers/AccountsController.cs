@@ -187,7 +187,8 @@ namespace Gig_Platform.Controllers
                     Created = result.Value.Created,
                     Skills = result.Value.Skills.Any() ? result.Value.Skills.Select(s => s.Name).ToList() : new List<string>(),
                     Reviews = reviews,
-                    ProfilePictureUrl = result.Value.ProfilePicture
+                    ProfilePictureUrl = result.Value.ProfilePicture,
+                    Bio = result.Value.Bio
                 });
             }
             foreach (var error in result.Errors)
