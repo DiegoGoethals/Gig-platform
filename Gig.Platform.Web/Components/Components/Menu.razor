@@ -9,7 +9,12 @@
         <ul class="profile-options">
             <li><a href="/" class="profile-link">Home</a></li>
             <li><a href="/chat" class="profile-link">Messages</a></li>
-            <li><a href="/user-applications" class="profile-link">Applications</a></li>
+
+            @if (User.Claims.FirstOrDefault(c => c.Type.Contains("role")).Value == "Employee")
+            {
+                <li><a href="/user-applications" class="profile-link">Applications</a></li>
+            }
+
             <li><a href="/user/@User.Claims.First(c => c.Type.Contains("nameidentifier")).Value" class="profile-link">Profile</a></li>
             <li @onclick="Logout" class="logout-button">Logout</li>
         </ul>
