@@ -1,13 +1,15 @@
 ﻿@using System.Security.Claims;
 
+@inject IAccountService AccountService
+
 @if (User?.Identity?.IsAuthenticated == true)
 {
     <details class="profile-menu">
-        <summary class="profile-summary">@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value</summary>
+        <summary class="profile-summary"><img src="@userDetails.ProfilePictureUrl" alt="Profile picture"/>@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value</summary>
         <ul class="profile-options">
             <li><a href="/" class="profile-link">Home</a></li>
             <li><a href="/chat" class="profile-link">Messages</a></li>
-			<li><a href="/user-applications" class="profile-link">Applications</a></li>
+            <li><a href="/user-applications" class="profile-link">Applications</a></li>
             <li><a href="/user/@User.Claims.First(c => c.Type.Contains("nameidentifier")).Value" class="profile-link">Profile</a></li>
             <li @onclick="Logout" class="logout-button">Logout</li>
         </ul>
@@ -18,16 +20,31 @@
     [Parameter]
     public ClaimsPrincipal User { get; set; }
     [Parameter]
-	public AuthenticationStateProvider AuthStateProvider { get; set; }
+    public AuthenticationStateProvider AuthStateProvider { get; set; }
     [Parameter]
-	public NavigationManager NavigationManager { get; set; }
+    public NavigationManager NavigationManager { get; set; }
 
-    protected override void OnParametersSet()
+	private UserDetailsResponseDto userDetails { get; set; } = new UserDetailsResponseDto();
+
+    protected override async void OnParametersSet()
     {
         if (User == null)
         {
             User = new ClaimsPrincipal(new ClaimsIdentity());
         }
+        else 
+        {
+			await FetchUserDetails();
+        }
+    }
+
+    private async Task FetchUserDetails()
+    {
+		if (User.Claims.Any(c => c.Type.Contains("nameidentifier")))
+		{
+			userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier")).Value));
+			StateHasChanged();
+		}
     }
 
 	private async Task Logout()
