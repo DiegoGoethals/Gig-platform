@@ -5,7 +5,7 @@
 @if (User?.Identity?.IsAuthenticated == true)
 {
     <details class="profile-menu">
-        <summary class="profile-summary"><img src="@userDetails.ProfilePictureUrl" alt="Profile picture"/>@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value</summary>
+        <summary class="profile-summary">@User.Claims.FirstOrDefault(c => c.Type.Contains("name"))?.Value <img src="@userDetails.ProfilePictureUrl" alt="Profile picture" /></summary>
         <ul class="profile-options">
             <li><a href="/" class="profile-link">Home</a></li>
             <li><a href="/chat" class="profile-link">Messages</a></li>

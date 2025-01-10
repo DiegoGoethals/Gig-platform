@@ -776,6 +776,13 @@ details {
     direction: rtl;
 }
 
+    .profile-summary img {
+        height: 36px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 50%;
+    }
+
 .profile-options {
     list-style-type: none;
     padding: 0;
