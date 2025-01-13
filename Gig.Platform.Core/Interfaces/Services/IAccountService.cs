@@ -1,9 +1,5 @@
 ﻿using Gig.Platform.Core.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Gig.Platform.Shared.Dtos;
 
 namespace Gig.Platform.Core.Interfaces.Services
 {
@@ -13,5 +9,6 @@ namespace Gig.Platform.Core.Interfaces.Services
         Task<ResultModel<ApplicationUser>> GetByUserNameAsync(string userName);
         Task<ResultModel<ApplicationUser>> Register(ApplicationUser user, IEnumerable<string> skills);
         Task<ResultModel<ApplicationUser>> GetByIdAsync(Guid userId);
+        Task<ResultModel<ApplicationUser>> UpdateAsync(Guid userId, IEnumerable<string> skills, string profilePicture, string bio);
     }
 }

@@ -1,11 +1,6 @@
 ﻿using Gig.Platform.Core.Interfaces.Repositories;
 using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gig.Platform.Core.Services
 {
@@ -98,6 +93,41 @@ namespace Gig.Platform.Core.Services
             {
                 IsSucces = false,
                 Errors = new List<string> { "User not found" }
+            };
+        }
+
+        public async Task<ResultModel<ApplicationUser>> UpdateAsync(Guid id, IEnumerable<string> skills, string profilePicture, string bio)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return new ResultModel<ApplicationUser>
+                {
+                    IsSucces = false,
+                    Errors = new List<string> { "User not found" }
+                };
+            }
+            user.ProfilePicture = profilePicture;
+            user.Bio = bio;
+            user.Skills.Clear();
+            foreach (var skillName in skills)
+            {
+                var skill = _skillRepository.GetByName(skillName).Result;
+                user.Skills.Add(skill);
+            }
+            var updated = await _userRepository.UpdateAsync(user);
+            if (updated)
+            {
+                return new ResultModel<ApplicationUser>
+                {
+                    IsSucces = true,
+                    Value = user
+                };
+            }
+            return new ResultModel<ApplicationUser>
+            {
+                IsSucces = false,
+                Errors = new List<string> { "Failed to update user" }
             };
         }
     }
