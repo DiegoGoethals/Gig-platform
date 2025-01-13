@@ -1,7 +1,6 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services;
-using MailKit;
-using Microsoft.AspNetCore.Http;
+using Gig.Platform.Shared.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -226,6 +225,49 @@ namespace Gig_Platform.Controllers
                 ModelState.AddModelError("", "Invalid token.");
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, RegistrationRequestDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _accountService.UpdateAsync(id, dto.Skills, await _supabaseStorageService.UploadFileAsync($"{dto.UserName}{dto.FileExtension}", dto.FileData), dto.Bio);
+            if (result.IsSucces)
+            {
+                var reviewsResult = await _reviewService.GetAllByRevieweeIdAsync(id);
+                var reviews = new List<ReviewResponseDto>();
+                if (reviewsResult.IsSucces)
+                {
+                    reviews = reviewsResult.Value.Select(r => new ReviewResponseDto
+                    {
+                        ReviewerId = r.ReviewerId,
+                        ReviewerName = r.Reviewer.UserName,
+                        Id = r.Id,
+                        RevieweeId = r.RevieweeId,
+                        Rating = r.Rating,
+                        Comment = r.Comment
+                    }).ToList();
+                }
+
+                return Ok(new UserDetailsResponseDto
+                {
+                    UserName = result.Value.UserName,
+                    Id = result.Value.Id,
+                    Created = result.Value.Created,
+                    Skills = result.Value.Skills.Any() ? result.Value.Skills.Select(s => s.Name).ToList() : new List<string>(),
+                    Reviews = reviews,
+                    ProfilePictureUrl = result.Value.ProfilePicture,
+                    Bio = result.Value.Bio
+                });
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+            return BadRequest(ModelState.Values);
         }
     }
 }
