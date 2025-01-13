@@ -1,0 +1,52 @@
+﻿@inject ISkillService SkillService
+
+<div class="user-container">
+
+    <div class="user-header">
+        <img src="@userDetails.ProfilePictureUrl" alt="@userDetails.UserName profile picture" />
+        <h1>@userDetails.UserName</h1>
+        <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
+        @if (!string.IsNullOrEmpty(userDetails.Bio))
+        {
+            <h3>Bio</h3>
+            <input class="user-bio" type="text" required @bind="userDetails.Bio">
+        }
+    </div>
+
+    <label for="skills">Skills</label>
+    <select id="skills" class="form-control mb-3 multi-select" multiple @onchange="HandleSkillsChange">
+        @foreach (var skill in skills)
+        {
+            <option value="@skill.Name">@skill.Name</option>
+        }
+    </select>
+
+
+    <div class="profile-buttons">
+        <button class="btn btn-primary">Save Changes</button>
+        <button class="btn btn-danger">Cancel</button>
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public IAccountService AccountService { get; set; }
+    [Parameter]
+    public UserDetailsResponseDto userDetails { get; set; }
+
+    private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
+
+    private List<string> SelectedSkills { get; set; } = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+		skills = await SkillService.GetSkillsAsync();
+    }
+
+    private void HandleSkillsChange(ChangeEventArgs e)
+    {
+        var selectedOptions = e.Value as IEnumerable<string>;
+        SelectedSkills = selectedOptions?.ToList() ?? new List<string>();
+    }
+}
