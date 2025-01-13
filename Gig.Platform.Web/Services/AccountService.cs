@@ -26,5 +26,12 @@ namespace Gig.Platform.Web.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<UserDetailsResponseDto>();
         }
+
+        public async Task<UserDetailsResponseDto> UpdateUserDetailsAsync(Guid id, RegistrationRequestDto dto)
+        {
+            var response = await _httpClient.PutAsync($"api/auth/{id}", JsonContent.Create(dto));
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<UserDetailsResponseDto>();
+        }
     }
 }

@@ -234,7 +234,11 @@ namespace Gig_Platform.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _accountService.UpdateAsync(id, dto.Skills, await _supabaseStorageService.UploadFileAsync($"{dto.UserName}{dto.FileExtension}", dto.FileData), dto.Bio);
+            var profilePicture = dto.FileData != null && dto.FileData.Length > 0
+                ? await _supabaseStorageService.UploadFileAsync($"{dto.UserName}{dto.FileExtension}", dto.FileData)
+                : null;
+
+            var result = await _accountService.UpdateAsync(id, dto.Skills, profilePicture, dto.Bio);
             if (result.IsSucces)
             {
                 var reviewsResult = await _reviewService.GetAllByRevieweeIdAsync(id);

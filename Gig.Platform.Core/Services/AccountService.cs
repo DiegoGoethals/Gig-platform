@@ -107,7 +107,12 @@ namespace Gig.Platform.Core.Services
                     Errors = new List<string> { "User not found" }
                 };
             }
-            user.ProfilePicture = profilePicture;
+
+            if (profilePicture != null)
+            {
+                user.ProfilePicture = profilePicture;
+            }
+
             user.Bio = bio;
             user.Skills.Clear();
             foreach (var skillName in skills)
@@ -115,6 +120,7 @@ namespace Gig.Platform.Core.Services
                 var skill = _skillRepository.GetByName(skillName).Result;
                 user.Skills.Add(skill);
             }
+
             var updated = await _userRepository.UpdateAsync(user);
             if (updated)
             {
@@ -124,6 +130,7 @@ namespace Gig.Platform.Core.Services
                     Value = user
                 };
             }
+
             return new ResultModel<ApplicationUser>
             {
                 IsSucces = false,
