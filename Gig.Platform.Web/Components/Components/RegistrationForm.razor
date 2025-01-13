@@ -134,7 +134,6 @@
         var file = e.File;
         if (file != null)
         {
-
             var buffer = new byte[file.Size];
             await file.OpenReadStream().ReadAsync(buffer);
 

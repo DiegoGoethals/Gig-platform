@@ -29,11 +29,18 @@
 
 
     <div class="profile-buttons">
-        <button class="btn btn-primary">Save Changes</button>
+        <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
         <button class="btn btn-danger">Cancel</button>
     </div>
 
 </div>
+
+@if (_isLoading)
+{
+    <div class="loader">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
 
 @code {
     [Parameter]
@@ -41,13 +48,15 @@
     [Parameter]
     public UserDetailsResponseDto userDetails { get; set; }
     [Parameter]
-	public string UserId { get; set; }
+    public string UserId { get; set; }
 
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
     private List<string> SelectedSkills { get; set; } = new List<string>();
     private byte[] FileData { get; set; }
     private string FileExtension { get; set; }
+
+    private bool _isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,27 +71,35 @@
 
     private async Task HandlePictureChange(InputFileChangeEventArgs e)
     {
+        _isLoading = true;
+		StateHasChanged();
         var file = e.File;
         if (file != null)
         {
-
             var buffer = new byte[file.Size];
             await file.OpenReadStream().ReadAsync(buffer);
 
             FileData = buffer;
             FileExtension = Path.GetExtension(file.Name);
         }
-	}
+        _isLoading = false;
+		StateHasChanged();
+    }
 
-	private async Task SaveChanges()
-	{
-		var user = new RegistrationRequestDto
-			{
-				Bio = userDetails.Bio,
-				Skills = SelectedSkills,
-                FileData = FileData,
-                FileExtension = FileExtension
-			};
+    private async Task SaveChanges()
+    {
+        _isLoading = true;
+		StateHasChanged();
+        var user = new RegistrationRequestDto
+		{
+			UserName = userDetails.UserName,
+			Bio = userDetails.Bio,
+			Skills = SelectedSkills,
+            FileData = FileData,
+            FileExtension = FileExtension
+	    };
         await AccountService.UpdateUserDetailsAsync(Guid.Parse(UserId), user);
+		_isLoading = false;
+        StateHasChanged();
 	}
 }
