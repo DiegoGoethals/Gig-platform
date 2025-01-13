@@ -3,7 +3,13 @@
 <div class="user-container">
 
     <div class="user-header">
-        <img src="@userDetails.ProfilePictureUrl" alt="@userDetails.UserName profile picture" />
+        <div class="profile-picture-container">
+            <img src="@userDetails.ProfilePictureUrl"
+            alt="@userDetails.UserName profile picture"
+            class="profile-picture"
+            id="currentProfilePicture" />
+            <InputFile OnChange="HandlePictureChange" class="upload-input" />
+        </div>
         <h1>@userDetails.UserName</h1>
         <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
         @if (!string.IsNullOrEmpty(userDetails.Bio))
@@ -34,14 +40,18 @@
     public IAccountService AccountService { get; set; }
     [Parameter]
     public UserDetailsResponseDto userDetails { get; set; }
+    [Parameter]
+	public string UserId { get; set; }
 
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
     private List<string> SelectedSkills { get; set; } = new List<string>();
+    private byte[] FileData { get; set; }
+    private string FileExtension { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-		skills = await SkillService.GetSkillsAsync();
+        skills = await SkillService.GetSkillsAsync();
     }
 
     private void HandleSkillsChange(ChangeEventArgs e)
@@ -49,4 +59,30 @@
         var selectedOptions = e.Value as IEnumerable<string>;
         SelectedSkills = selectedOptions?.ToList() ?? new List<string>();
     }
+
+    private async Task HandlePictureChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+
+            FileData = buffer;
+            FileExtension = Path.GetExtension(file.Name);
+        }
+	}
+
+	private async Task SaveChanges()
+	{
+		var user = new RegistrationRequestDto
+			{
+				Bio = userDetails.Bio,
+				Skills = SelectedSkills,
+                FileData = FileData,
+                FileExtension = FileExtension
+			};
+        await AccountService.UpdateUserDetailsAsync(Guid.Parse(UserId), user);
+	}
 }
