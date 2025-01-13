@@ -12,21 +12,21 @@
         </div>
         <h1>@userDetails.UserName</h1>
         <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
-        @if (!string.IsNullOrEmpty(userDetails.Bio))
-        {
-            <h3>Bio</h3>
-            <input class="user-bio" type="text" required @bind="userDetails.Bio">
-        }
+        <h3>Bio</h3>
+        <input class="user-bio" type="text" required @bind="userDetails.Bio">
     </div>
 
-    <label for="skills">Skills</label>
-    <select id="skills" class="form-control mb-3 multi-select" multiple @onchange="HandleSkillsChange">
-        @foreach (var skill in skills)
-        {
-            <option value="@skill.Name">@skill.Name</option>
-        }
-    </select>
 
+    @if (Role == "Employee")
+    {
+        <label for="skills">Skills</label>
+        <select id="skills" class="form-control mb-3 multi-select" multiple @onchange="HandleSkillsChange">
+            @foreach (var skill in skills)
+            {
+                <option value="@skill.Name" selected="@SelectedSkills.Contains(skill.Name)">@skill.Name</option>
+            }
+        </select>
+    }
 
     <div class="profile-buttons">
         <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
@@ -49,6 +49,8 @@
     public UserDetailsResponseDto userDetails { get; set; }
     [Parameter]
     public string UserId { get; set; }
+    [Parameter]
+	public string Role { get; set; }
 
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
@@ -61,6 +63,10 @@
     protected override async Task OnInitializedAsync()
     {
         skills = await SkillService.GetSkillsAsync();
+		foreach (var skill in userDetails.Skills)
+        {
+			SelectedSkills.Add(skill);
+        }
     }
 
     private void HandleSkillsChange(ChangeEventArgs e)
@@ -76,10 +82,9 @@
         var file = e.File;
         if (file != null)
         {
-            var buffer = new byte[file.Size];
-            await file.OpenReadStream().ReadAsync(buffer);
-
-            FileData = buffer;
+            using var stream = new MemoryStream();
+            await file.OpenReadStream(maxAllowedSize: 10485760).CopyToAsync(stream);
+            FileData = stream.ToArray();
             FileExtension = Path.GetExtension(file.Name);
         }
         _isLoading = false;

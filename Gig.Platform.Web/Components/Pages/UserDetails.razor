@@ -9,7 +9,7 @@
 
 @if (_isEditing)
 {
-    <EditableProfile UserId="@UserId" AccountService="AccountService" userDetails="userDetails"/>
+    <EditableProfile Role="@User.Claims.First(c => c.Type.Contains("role")).Value" UserId="@UserId" AccountService="AccountService" userDetails="userDetails"/>
 }
 else
 {
