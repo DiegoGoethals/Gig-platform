@@ -51,6 +51,8 @@
     public string UserId { get; set; }
     [Parameter]
 	public string Role { get; set; }
+    [Parameter]
+	public EventCallback OnSave { get; set; }
 
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
@@ -105,6 +107,6 @@
 	    };
         await AccountService.UpdateUserDetailsAsync(Guid.Parse(UserId), user);
 		_isLoading = false;
-        StateHasChanged();
+		await OnSave.InvokeAsync();
 	}
 }

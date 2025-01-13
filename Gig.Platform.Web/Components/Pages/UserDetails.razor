@@ -9,7 +9,7 @@
 
 @if (_isEditing)
 {
-    <EditableProfile Role="@User.Claims.First(c => c.Type.Contains("role")).Value" UserId="@UserId" AccountService="AccountService" userDetails="userDetails"/>
+    <EditableProfile OnSave="UpdateProfile" Role="@User.Claims.First(c => c.Type.Contains("role")).Value" UserId="@UserId" AccountService="AccountService" userDetails="userDetails" />
 }
 else
 {
@@ -129,5 +129,11 @@ else
     private async Task EditReview(ReviewResponseDto reviewResponseDto) {
 		reviewToEdit = reviewResponseDto;
 		await reviewForm.Show();
+    }
+
+    private void UpdateProfile()
+    {
+		_isEditing = false;
+		StateHasChanged();
     }
 }
