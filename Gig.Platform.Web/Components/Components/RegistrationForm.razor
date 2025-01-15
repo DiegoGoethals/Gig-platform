@@ -59,6 +59,8 @@
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 
+	<p>@_errorMessage</p>
+
 	@if (_isRegistring)
 	{
 		<div class="loader">
@@ -84,6 +86,8 @@
     public string FileExtension { get; set; }
 	public string Bio { get; set; }
 
+	private string _errorMessage;
+
     private bool _isRegistring = false;
 
 	protected override async Task OnInitializedAsync()
@@ -99,34 +103,50 @@
 
     public async Task Register()
     {
-		_isRegistring = true;
+        _isRegistring = true;
 
-		var dto = new RegistrationRequestDto
-		{
-			UserName = Username,
-			Email = Email,
-			Password = Password,
-			Firstname = FirstName,
-			Lastname = LastName,
-			Birthday = Birthday,
-			Role = Role,
-			Skills = SelectedSkills,
-			FileData = FileData,
-			FileExtension = FileExtension,
-			Bio = Bio
-		};
+        var dto = new RegistrationRequestDto
+            {
+                UserName = Username,
+                Email = Email,
+                Password = Password,
+                Firstname = FirstName,
+                Lastname = LastName,
+                Birthday = Birthday,
+                Role = Role,
+                Skills = SelectedSkills,
+                FileData = FileData,
+                FileExtension = FileExtension,
+                Bio = Bio
+            };
 
-		if (Password != ConfirmPassword)
-		{
-			// Show error message
-			return;
-		}
+        if (Password != ConfirmPassword)
+        {
+            ShowErrorMessage("Passwords do not match.");
+            _isRegistring = false;
+            return;
+        }
 
-		var result = await AccountService.RegisterAsync(dto);
+        try
+        {
+            var result = await AccountService.RegisterAsync(dto);
 
-		_isRegistring = false;
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            ShowErrorMessage(ex.Message);
+        }
+        finally
+        {
+            _isRegistring = false;
+        }
+    }
 
-		NavigationManager.NavigateTo("/");
+    private void ShowErrorMessage(string message)
+    {
+		_errorMessage = message;
+		StateHasChanged();
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
