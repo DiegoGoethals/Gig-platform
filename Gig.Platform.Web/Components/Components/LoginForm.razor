@@ -14,31 +14,53 @@
 		</div>
 		<button type="submit" class="btn btn-primary">Login</button>
 	</form>
+
+	<p>@_errorMessage</p>
+
+	@if (_isLoggingIn)
+	{
+		<div class="loader">
+			<span class="sr-only">Loading...</span>
+		</div>
+	}
 </div>
 
 @code {
 	public string Username { get; set; }
 	public string Password { get; set; }
 
+	private string _errorMessage;
+	private bool _isLoggingIn;
+
 	private async Task Login()
 	{
+		_isLoggingIn = true;
+
 		var dto = new AccountRequestDto
 			{
 				UserName = Username,
 				Password = Password
 			};
-		var response = await AccountService.Login(dto);
-		if (response != null)
+
+		try
 		{
-			if (AuthStateProvider is CustomAuthenticationStateProvider customAuthProvider)
-			{
-				await customAuthProvider.NotifyUserAuthentication(response.Token);
-			}
+			var result = await AccountService.Login(dto);
+
 			NavigationManager.NavigateTo("/");
 		}
-		else
+		catch (Exception ex)
 		{
-			Console.WriteLine("Login failed");
+			ShowErrorMessage(ex.Message);
 		}
+		finally
+		{
+			_isLoggingIn = false;
+		}
+	}
+
+	private void ShowErrorMessage(string message)
+	{
+		_errorMessage = message;
+		StateHasChanged();
 	}
 }

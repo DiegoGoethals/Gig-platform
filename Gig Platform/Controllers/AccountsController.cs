@@ -47,7 +47,7 @@ namespace Gig_Platform.Controllers
             var result = await _signInManager.PasswordSignInAsync(accountRequestDto.UserName, accountRequestDto.Password, false, false);
             if (!result.Succeeded)
             {
-                ModelState.AddModelError("", "Wrong credentials!");
+                ModelState.AddModelError("", "Wrong email and/or password!");
                 return BadRequest(ModelState);
             }
             var user = await _userManager.FindByNameAsync(accountRequestDto.UserName);
