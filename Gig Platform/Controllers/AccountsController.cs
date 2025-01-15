@@ -1,6 +1,5 @@
 ﻿using Gig.Platform.Core.Interfaces.Services;
 using Gig.Platform.Core.Services;
-using Gig.Platform.Shared.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +18,7 @@ namespace Gig_Platform.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
-        private readonly Gig.Platform.Core.Interfaces.Services.IMailService _mailService;
+        private readonly IMailService _mailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinkGenerator _linkGenerator;
         private readonly SupabaseStorageService _supabaseStorageService;
@@ -156,7 +155,8 @@ namespace Gig_Platform.Controllers
                     }
                 }
             }
-            return BadRequest();
+            ModelState.AddModelError("", "User already exists.");
+            return BadRequest(ModelState);
         }
 
         [HttpGet("{id}")]
