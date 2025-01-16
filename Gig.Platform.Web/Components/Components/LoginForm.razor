@@ -19,9 +19,7 @@
 
 	@if (_isLoggingIn)
 	{
-		<div class="loader">
-			<span class="sr-only">Loading...</span>
-		</div>
+		<Loader/>
 	}
 </div>
 
@@ -45,6 +43,11 @@
 		try
 		{
 			var result = await AccountService.Login(dto);
+
+			if (AuthStateProvider is CustomAuthenticationStateProvider customAuthProvider)
+			{
+				await customAuthProvider.NotifyUserAuthentication(result.Token);
+			}
 
 			NavigationManager.NavigateTo("/");
 		}
