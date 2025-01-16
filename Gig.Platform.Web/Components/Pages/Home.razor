@@ -9,7 +9,7 @@
 
 @if (User == null)
 {
-    <p>Loading...</p>
+    <Loader/>
 }
 else if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employer"))
 {
