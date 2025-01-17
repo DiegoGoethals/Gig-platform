@@ -36,7 +36,7 @@ else
                 }
                 else
                 {
-				    <button class="btn btn-primary" @onclick="() => _isEditing = true">Update Profile</button>
+                    <button class="btn btn-primary" @onclick="() => _isEditing = true">Update Profile</button>
                 }
             </div>
 
@@ -71,7 +71,7 @@ else
             }
 
             @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower() &&
-          !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
+         !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
             {
                 <button class="btn btn-primary" @onclick="AddReview">Add review</button>
             }
@@ -79,6 +79,12 @@ else
             <ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails" review="reviewToEdit" ReviewService="ReviewService"/>
         }
     </div>
+}
+
+@if (_isLoading) 
+{
+    <Loader />
+
 }
 
 @code {
@@ -94,6 +100,7 @@ else
 
     private bool _isUserLoaded;
     private bool _isEditing;
+    private bool _isLoading;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -131,9 +138,12 @@ else
 		await reviewForm.Show();
     }
 
-    private void UpdateProfile()
+    private async Task UpdateProfile()
     {
+		_isLoading = true;
 		_isEditing = false;
+		await FetchUserDetails();
+		_isLoading = false;
 		StateHasChanged();
     }
 }
