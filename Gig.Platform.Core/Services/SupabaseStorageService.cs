@@ -1,5 +1,7 @@
 ﻿using Supabase;
+using Supabase.Gotrue;
 using Supabase.Storage;
+using Supabase.Storage.Interfaces;
 using Client = Supabase.Client;
 
 namespace Gig.Platform.Core.Services
@@ -27,6 +29,11 @@ namespace Gig.Platform.Core.Services
             var storage = _client.Storage;
             var bucket = storage.From(_bucketName);
 
+            if (CheckIfFileExists(fileName, bucket).Result)
+            {
+                await bucket.Remove(new List<string> { fileName });
+            }
+
             var uploadUrl = await bucket.Upload(fileBytes, fileName);
 
             if (string.IsNullOrEmpty(uploadUrl))
@@ -35,9 +42,15 @@ namespace Gig.Platform.Core.Services
             return GetPublicUrl(fileName);
         }
 
-        public string GetPublicUrl(string fileName)
+        private string GetPublicUrl(string fileName)
         {
             return $"{_projectUrl}/storage/v1/object/public/{_bucketName}/{fileName}";
+        }
+
+        private async Task<bool> CheckIfFileExists(string fileName, IStorageFileApi<FileObject> bucket)
+        {
+            var existingFiles = await bucket.List();
+            return existingFiles.Any(f => f.Name == fileName);
         }
     }
 }
