@@ -1,0 +1,211 @@
+﻿@page "/"
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    header {
+        background: linear-gradient(to right, #0056b3, #0099ff);
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 10px auto;
+            line-height: 1.5;
+            color: white;
+        }
+
+    .cta-btn {
+        background-color: #ff6600;
+        color: #fff;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+        .cta-btn:hover {
+            background-color: #ff4500;
+        }
+
+    .section {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .features, .categories {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .feature-item, .category-item {
+        max-width: 300px;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq {
+        text-align: left;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        margin-bottom: 20px;
+    }
+
+    .cta-section {
+        background: #007bff;
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        color: #FFD700;
+    }
+
+    footer {
+        background: #222;
+        padding: 20px;
+        text-align: center;
+    }
+
+        footer a {
+            color: #00c6ff;
+            text-decoration: none;
+        }
+</style>
+
+<header>
+    <h1>Find Quick Gigs, Earn Extra Cash</h1>
+    <p>Connect with local opportunities in just a few clicks.</p>
+    <a class="cta-btn btn" href="/home">Get Started</a>
+</header>
+
+<section class="section">
+    <h2>How It Works</h2>
+    <div class="features">
+        <div class="feature-item">
+            <h3>Sign Up</h3>
+            <p>Create an account as an employer or employee.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Post or Apply</h3>
+            <p>Employers post tasks, employees browse and apply.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Get It Done</h3>
+            <p>Work is completed and payments handled securely.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Rate & Review</h3>
+            <p>Build trust by leaving reviews.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Why Choose Us?</h2>
+    <div class="features">
+        <div class="feature-item">
+            <h3>Flexible Work</h3>
+            <p>Pick up jobs that fit your schedule.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Easy Payments</h3>
+            <p>Secure and hassle-free transactions.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Location-Based</h3>
+            <p>Find gigs near you effortlessly.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Student-Friendly</h3>
+            <p>Earn extra cash with minimal effort.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Explore Job Categories</h2>
+    <div class="categories">
+        <div class="category-item">
+            <h3>Household Chores</h3>
+            <p>Cleaning, lawn mowing, and more.</p>
+        </div>
+        <div class="category-item">
+            <h3>Tutoring</h3>
+            <p>Help others with math, coding, and more.</p>
+        </div>
+        <div class="category-item">
+            <h3>Tech Help</h3>
+            <p>Device setup, troubleshooting, and assistance.</p>
+        </div>
+        <div class="category-item">
+            <h3>Event Assistance</h3>
+            <p>Help at events with catering, setup, and more.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Security & Trust</h2>
+    <p>We ensure a safe and reliable experience with:</p>
+    <ul>
+        <li>Verified accounts</li>
+        <li>Secure payment integration</li>
+        <li>Built-in messaging system</li>
+    </ul>
+</section>
+
+<section class="section faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+        <h3>How do I get paid?</h3>
+        <p>Payments are processed securely through our platform.</p>
+    </div>
+    <div class="faq-item">
+        <h3>Is it free to sign up?</h3>
+        <p>Yes, signing up and browsing jobs is completely free.</p>
+    </div>
+    <div class="faq-item">
+        <h3>How do I find jobs in my area?</h3>
+        <p>Our platform provides location-based job listings.</p>
+    </div>
+</section>
+
+<section class="cta-section">
+    <h2>Ready to Find Gigs?</h2>
+    <a class="cta-btn btn" href="/home">Join Now</a>
+</section>
+
+<footer>
+    <p>&copy; 2025 Your Gig Platform. All Rights Reserved.</p>
+    <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+</footer>
+
+@code {
+
+}
