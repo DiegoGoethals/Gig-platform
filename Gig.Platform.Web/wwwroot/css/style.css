@@ -1024,3 +1024,28 @@ details {
     font-size: 1.2rem;
     text-align: center;
 }
+
+.edit-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    border-radius: 50%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.edit-icon {
+    transform: scale(2);
+}
+
+.profile-picture-container:hover .edit-overlay {
+    transform: scale(3);
+}
+
+.profile-picture-container:hover .profile-picture {
+    filter: brightness(0.7);
+}

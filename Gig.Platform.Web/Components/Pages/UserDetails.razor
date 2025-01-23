@@ -9,7 +9,7 @@
 
 @if (_isEditing)
 {
-    <EditableProfile OnSave="UpdateProfile" Role="@User.Claims.First(c => c.Type.Contains("role")).Value" UserId="@UserId" AccountService="AccountService" userDetails="userDetails" />
+    <EditableProfile OnToggle="ToggleIsEditable" OnSave="UpdateProfile" Role="@User.Claims.First(c => c.Type.Contains("role")).Value" UserId="@UserId" AccountService="AccountService" userDetails="userDetails" />
 }
 else
 {
@@ -71,7 +71,7 @@ else
             }
 
             @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower() &&
-         !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
+        !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
             {
                 <button class="btn btn-primary" @onclick="AddReview">Add review</button>
             }
@@ -120,11 +120,21 @@ else
     private async Task FetchUserDetails()
     {
         userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
-		if (userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
-		{
-			currentUserReview = userDetails.Reviews.First(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
-			userDetails.Reviews.Remove(currentUserReview);
-		}
+        if (userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
+        {
+            var currentUserReview = userDetails.Reviews
+                .First(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+
+            var reviewsList = userDetails.Reviews.ToList();
+            reviewsList.Remove(currentUserReview);
+            reviewsList.Insert(0, currentUserReview);
+
+            userDetails.Reviews.Clear();
+            foreach (var review in reviewsList)
+            {
+                userDetails.Reviews.Add(review);
+            }
+        }
         StateHasChanged();
     }
 
@@ -134,16 +144,21 @@ else
     }
 
     private async Task EditReview(ReviewResponseDto reviewResponseDto) {
-		reviewToEdit = reviewResponseDto;
-		await reviewForm.Show();
+        reviewToEdit = reviewResponseDto;
+        await reviewForm.Show();
     }
 
     private async Task UpdateProfile()
     {
-		_isLoading = true;
-		_isEditing = false;
-		await FetchUserDetails();
-		_isLoading = false;
-		StateHasChanged();
+        _isLoading = true;
+        _isEditing = false;
+        await FetchUserDetails();
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private void ToggleIsEditable()
+    {
+        _isEditing = !_isEditing;
     }
 }
