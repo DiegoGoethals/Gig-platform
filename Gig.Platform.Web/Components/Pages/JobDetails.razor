@@ -37,6 +37,7 @@
         }
 		else if (role == "Employee" && Application != null)
         {
+            <a href="user/@Job.EmployerId">Employer: @Job.EmployerName</a>
 			<ApplicationCard role="@role" application="Application" applicationStatuses="applicationStatuses"/>
         }
         else
