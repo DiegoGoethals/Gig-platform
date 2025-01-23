@@ -5,9 +5,14 @@
     <div class="user-header">
         <div class="profile-picture-container">
             <img src="@userDetails.ProfilePictureUrl"
-            alt="@userDetails.UserName profile picture"
-            class="profile-picture"
-            id="currentProfilePicture" />
+                 alt="@userDetails.UserName profile picture"
+                 class="profile-picture"
+                 id="currentProfilePicture" />
+
+            <div class="edit-overlay">
+                <i class="fa fa-pencil edit-icon"></i>
+            </div>
+
             <InputFile OnChange="HandlePictureChange" class="upload-input" />
         </div>
         <h1>@userDetails.UserName</h1>

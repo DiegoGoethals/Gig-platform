@@ -122,8 +122,18 @@ else
         userDetails = await AccountService.GetUserDetailsAsync(Guid.Parse(UserId));
         if (userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
         {
-            currentUserReview = userDetails.Reviews.First(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
-            userDetails.Reviews.Remove(currentUserReview);
+            var currentUserReview = userDetails.Reviews
+                .First(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+
+            var reviewsList = userDetails.Reviews.ToList();
+            reviewsList.Remove(currentUserReview);
+            reviewsList.Insert(0, currentUserReview);
+
+            userDetails.Reviews.Clear();
+            foreach (var review in reviewsList)
+            {
+                userDetails.Reviews.Add(review);
+            }
         }
         StateHasChanged();
     }
