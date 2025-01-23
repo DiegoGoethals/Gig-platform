@@ -30,7 +30,7 @@
 
     <div class="profile-buttons">
         <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
-        <button class="btn btn-danger">Cancel</button>
+        <button class="btn btn-danger" @onclick="Cancel">Cancel</button>
     </div>
 
 </div>
@@ -51,6 +51,8 @@
 	public string Role { get; set; }
     [Parameter]
 	public EventCallback OnSave { get; set; }
+    [Parameter]
+	public EventCallback OnToggle { get; set; }
 
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
@@ -108,4 +110,10 @@
 		_isLoading = false;
 		await OnSave.InvokeAsync();
 	}
+
+    private async Task Cancel()
+    {
+		await OnToggle.InvokeAsync();
+
+    }
 }
