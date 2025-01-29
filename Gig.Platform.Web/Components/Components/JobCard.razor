@@ -64,6 +64,7 @@
 	private async Task LoadTranslations()
 	{
 		_isLoading = true;
+		StateHasChanged();
 
 		var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
 		language = language.Substring(0, 2).ToLower();
@@ -75,5 +76,6 @@
 		translatedApplied = await TranslationService.TranslateAsync("You have already applied for this job", language);
 
 		_isLoading = false;
+		StateHasChanged();
 	}
 }

@@ -127,6 +127,7 @@
     private async Task LoadTranslations()
     {
         _isLoading = true;
+		StateHasChanged();
 
         var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
         language = language.Substring(0, 2).ToLower();
@@ -141,6 +142,7 @@
         translatedDeleteJobText = await TranslationService.TranslateAsync("Delete job", language);
 
         _isLoading = false;
+        StateHasChanged();
     }
 
     private async Task ShowForm()

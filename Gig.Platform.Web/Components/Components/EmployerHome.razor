@@ -86,6 +86,7 @@ else {
     private async Task LoadTranslations()
     {
         _isLoading = true;
+		StateHasChanged();
 
         var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
         language = language.Substring(0, 2).ToLower();
@@ -94,5 +95,6 @@ else {
         translatedAddJob = await TranslationService.TranslateAsync("Add new job", language);
 
         _isLoading = false;
+		StateHasChanged();
     }
 }
