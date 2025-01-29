@@ -34,6 +34,10 @@ builder.Services.AddHttpClient<IChatService, ChatService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7257/");
 });
+builder.Services.AddHttpClient<TranslationService, TranslationService>(client =>
+{
+    client.BaseAddress = new Uri("http://127.0.0.1:5000//");
+});
 
 builder.Services.AddScoped<ILocationService, LocationService>();
 
