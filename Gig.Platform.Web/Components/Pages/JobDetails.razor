@@ -10,10 +10,9 @@
 <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
 <div class="job-details">
-    @if (Job == null)
+    @if (Job == null || _isLoading)
     {
-        @* This is your placeholder text for loading *@
-        <p>@translatedLoadingText</p>
+        <Loader/>
     }
     else
     {
@@ -51,9 +50,9 @@
                 @foreach (var application in Applications)
                 {
                     <ApplicationCard application="application"
-                                     role="@role"
-                                     applicationStatuses="applicationStatuses"
-                                     OnHandleApplication="HandleApplicationAsync" />
+                    role="@role"
+                    applicationStatuses="applicationStatuses"
+                    OnHandleApplication="HandleApplicationAsync" />
                 }
             </ul>
 
@@ -77,8 +76,8 @@
 
     private JobForm jobForm;
 
-    private string translatedLoadingText;
-    private string translatedJobName;
+    private bool _isLoading;
+
     private string translatedJobDescription;
     private string translatedSalaryText;
     private string translatedAddressText;
@@ -113,7 +112,6 @@
                     Application = allApplications.FirstOrDefault(a => a.CandidateId == candidateId);
                 }
 
-                // Call to load the translations after loading job data
                 await LoadTranslations();
 
                 StateHasChanged();
@@ -123,19 +121,21 @@
 
     private async Task LoadTranslations()
     {
-        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
-		language = language.Substring(0, 2).ToLower();
+        _isLoading = true;
 
-        translatedLoadingText = await TranslationService.TranslateAsync("Loading...", language);
-        translatedJobName = await TranslationService.TranslateAsync(Job.Name, language);
+        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        language = language.Substring(0, 2).ToLower();
+
         translatedJobDescription = await TranslationService.TranslateAsync(Job.Description, language);
         translatedSalaryText = await TranslationService.TranslateAsync("Salary", language);
         translatedAddressText = await TranslationService.TranslateAsync("Address", language);
         translatedSkillsText = await TranslationService.TranslateAsync("Skills", language);
         translatedEmployerText = await TranslationService.TranslateAsync("Employer", language);
         translatedApplyText = await TranslationService.TranslateAsync("Apply", language);
-        translatedEditJobText = await TranslationService.TranslateAsync("Edit job details", language);
+        translatedEditJobText = await TranslationService.TranslateAsync("Edit details", language);
         translatedDeleteJobText = await TranslationService.TranslateAsync("Delete job", language);
+
+        _isLoading = false;
     }
 
     private async Task ShowForm()
@@ -149,7 +149,7 @@
         {
             await JobService.UpdateJobAsync(Guid.Parse(JobId), job);
             Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
-            await LoadTranslations(); // Re-load translations after updating job
+            await LoadTranslations();
             StateHasChanged();
         }
         catch (Exception ex)
