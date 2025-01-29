@@ -5,7 +5,7 @@
 <div>
 	<form id="filter-bar">
 		<select @onchange="OnChangeDistance">
-			<option disabled selected>--Choose the maximum distance--</option>
+			<option disabled selected>@translatedMaxDistance</option>
 			<option value="1">1 km</option>
 			<option value="5">5 km</option>
 			<option value="10">10 km</option>
@@ -29,6 +29,11 @@
 	}
 </ul>
 
+@if (_isLoading)
+{
+	<Loader />
+}
+
 @code {
 	[Parameter]
 	public NavigationManager NavigationManager { get; set; }
@@ -41,6 +46,10 @@
 	[Parameter]
 	public IJSRuntime JSRuntime { get; set; }
 
+	private bool _isLoading;
+
+	private string translatedMaxDistance;
+
 	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
 	private IEnumerable<SkillResponseDto> skills { get; set; } = Enumerable.Empty<SkillResponseDto>();
 
@@ -51,6 +60,7 @@
 	{
 		Jobs = await JobService.GetAllJobsForEmployeesAsync();
 		skills = await SkillService.GetSkillsAsync();
+		await LoadTranslations();
 	}
 
 	private async Task FilterJobs()
@@ -74,5 +84,17 @@
 		var selectedOptions = e.Value as IEnumerable<string>;
 		SelectedSkills = selectedOptions?.ToList() ?? new List<string>();
 		await FilterJobs();
+	}
+
+	private async Task LoadTranslations()
+	{
+		_isLoading = true;
+
+		var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+		language = language.Substring(0, 2).ToLower();
+
+		translatedMaxDistance = await TranslationService.TranslateAsync("--Choose the maximum distance--", language);
+
+		_isLoading = false;
 	}
 }
