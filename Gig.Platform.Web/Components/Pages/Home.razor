@@ -21,7 +21,7 @@ else if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employer"))
 else
 {
     <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
-    <EmployeeHome User="User" NavigationManager="NavigationManager" ApplicationService="ApplicationService"/>
+    <EmployeeHome User="User" NavigationManager="NavigationManager" ApplicationService="ApplicationService" TranslationService="TranslationService" JSRuntime="JSRuntime" />
 }
 
 @code {

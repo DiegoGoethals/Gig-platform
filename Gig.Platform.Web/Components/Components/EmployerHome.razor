@@ -9,7 +9,7 @@ else {
     <ul id="jobs">
         @foreach (var job in Jobs)
         {
-            <JobCard User="User" Job="job" NavigationManager="NavigationManager" LocationService="LocationService" ApplicationService="ApplicationService"/>
+            <JobCard User="User" Job="job" NavigationManager="NavigationManager" LocationService="LocationService" ApplicationService="ApplicationService" TranslationService="TranslationService" JSRuntime="JSRuntime"/>
         }
     </ul>
 }
@@ -17,7 +17,6 @@ else {
 @if (_isLoading)
 {
 	<Loader />
-
 }
 
 <button class="btn btn-primary" @onclick="ShowForm">@translatedAddJob</button>
