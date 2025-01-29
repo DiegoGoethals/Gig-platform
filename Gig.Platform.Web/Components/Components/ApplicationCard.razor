@@ -44,6 +44,11 @@
     private string translatedAccept;
     private string translatedReject;
 
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadTranslations();
+	}
+
     private async Task HandleApplicationAsync(ApplicationStatusDto status)
     {
         await OnHandleApplication.InvokeAsync((application.Id, status));

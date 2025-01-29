@@ -4,6 +4,8 @@
 @rendermode InteractiveServer
 
 @inject IApplicationService ApplicationService
+@inject TranslationService TranslationService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
 
@@ -14,7 +16,7 @@
 else if (User.Claims.Any(c => c.Type.Contains("role") && c.Value == "Employer"))
 {
     <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
-    <EmployerHome User="User" NavigationManager="NavigationManager" ApplicationService="ApplicationService"/>
+    <EmployerHome User="User" NavigationManager="NavigationManager" ApplicationService="ApplicationService" TranslationService="TranslationService" JSRuntime="JSRuntime"/>
 }
 else
 {
