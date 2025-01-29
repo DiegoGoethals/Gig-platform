@@ -1,36 +1,65 @@
 ﻿<li class="application-card">
     <a href="user/@application.CandidateId">@application.CandidateName</a>
     <p class="@(application.ApplicationStatus.ToLower())">@application.ApplicationStatus</p>
-	@if (role == "Employer")
-	{
+    @if (role == "Employer")
+    {
         <div>
             @foreach (var status in applicationStatuses)
             {
                 if (status.Name == "Approved")
                 {
-                    <button class="btn btn-success" @onclick="() => HandleApplicationAsync(status)">Accept</button>
+                    <button class="btn btn-success" @onclick="() => HandleApplicationAsync(status)">@translatedAccept</button>
                 }
                 else if (status.Name == "Rejected")
                 {
-                    <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(status)">Reject</button>
+                    <button class="btn btn-danger" @onclick="() => HandleApplicationAsync(status)">@translatedReject</button>
                 }
             }
         </div>
-	}
+    }
 </li>
 
+@if (_isLoading)
+{
+    <Loader/>
+}
+
 @code {
-	[Parameter]
-	public ApplicationResponseDto application { get; set; }
-	[Parameter]
-	public IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; }
+    [Parameter]
+    public ApplicationResponseDto application { get; set; }
+    [Parameter]
+    public IEnumerable<ApplicationStatusDto> applicationStatuses { get; set; }
     [Parameter]
     public EventCallback<(Guid applicationId, ApplicationStatusDto status)> OnHandleApplication { get; set; }
-	[Parameter]
-	public string role { get; set; }
+    [Parameter]
+    public string role { get; set; }
+    [Parameter]
+    public TranslationService TranslationService { get; set;  }
+    [Parameter]
+    public IJSRuntime JSRuntime { get; set;  }
+
+    private bool _isLoading;
+
+    private string translatedStatus;
+    private string translatedAccept;
+    private string translatedReject;
 
     private async Task HandleApplicationAsync(ApplicationStatusDto status)
     {
         await OnHandleApplication.InvokeAsync((application.Id, status));
+    }
+
+    private async Task LoadTranslations()
+    {
+        _isLoading = true;
+
+        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        language = language.Substring(0, 2).ToLower();
+
+        translatedStatus = await TranslationService.TranslateAsync(application.ApplicationStatus, language);
+        translatedAccept = await TranslationService.TranslateAsync("Accept", language);
+        translatedReject = await TranslationService.TranslateAsync("Reject", language);
+
+        _isLoading = false;
     }
 }

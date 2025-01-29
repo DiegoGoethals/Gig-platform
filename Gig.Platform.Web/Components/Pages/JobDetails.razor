@@ -40,7 +40,11 @@
         else if (role == "Employee" && Application != null)
         {
             <a href="user/@Job.EmployerId">@translatedEmployerText: @Job.EmployerName</a>
-            <ApplicationCard role="@role" application="Application" applicationStatuses="applicationStatuses" />
+            <ApplicationCard role="@role" 
+                application="Application" 
+                applicationStatuses="applicationStatuses" 
+                TranslationService="TranslationService"
+                JSRuntime="JsRunTime" />
         }
         else
         {
@@ -52,7 +56,9 @@
                     <ApplicationCard application="application"
                     role="@role"
                     applicationStatuses="applicationStatuses"
-                    OnHandleApplication="HandleApplicationAsync" />
+                    OnHandleApplication="HandleApplicationAsync"
+                    TranslationService="TranslationService"
+                    JSRuntime="JsRunTime" />
                 }
             </ul>
 
