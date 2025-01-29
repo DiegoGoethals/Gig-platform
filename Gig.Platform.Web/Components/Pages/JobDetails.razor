@@ -5,7 +5,6 @@
 @inject IJobService JobService
 @inject IApplicationService ApplicationService
 @inject TranslationService TranslationService
-@inject IJSRuntime JsRunTime
 
 <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
@@ -44,7 +43,7 @@
                 application="Application" 
                 applicationStatuses="applicationStatuses" 
                 TranslationService="TranslationService"
-                JSRuntime="JsRunTime" />
+                JSRuntime="JSRuntime" />
         }
         else
         {
@@ -58,7 +57,7 @@
                     applicationStatuses="applicationStatuses"
                     OnHandleApplication="HandleApplicationAsync"
                     TranslationService="TranslationService"
-                    JSRuntime="JsRunTime" />
+                    JSRuntime="JSRuntime" />
                 }
             </ul>
 

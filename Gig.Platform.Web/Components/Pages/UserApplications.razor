@@ -4,6 +4,7 @@
 @inherits SecurePageBase
 
 @inject IApplicationService _applicationService
+@inject TranslationService TranslationService
 
 <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
@@ -13,31 +14,62 @@
 		{
 			<li class="application-card">
 				<a href="job/@application.JobId">@application.JobTitle</a>
-				<p class="@(application.ApplicationStatus.ToLower())">@application.ApplicationStatus</p>
+                <p class="@(application.ApplicationStatus.ToLower())">
+                    @(translatedStatuses.TryGetValue(application.ApplicationStatus, out var translated) ? translated : application.ApplicationStatus)
+                </p>
+
 			</li>
 		}
 	</ul>
 </div>
 
-@code {
-	private IEnumerable<ApplicationResponseDto> applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
-
-	private bool _applicationsLoaded;
-
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		await base.OnAfterRenderAsync(firstRender);
-
-		if (firstRender && !_applicationsLoaded)
-		{
-			_applicationsLoaded = true;
-			await FetchApplications();
-		}
-	}
-
-	private async Task FetchApplications()
-	{
-		applications = await _applicationService.GetAllByCandidateAsync(Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
-		StateHasChanged();
-	}
+@if (_isLoading)
+{
+	<Loader/>
 }
+
+@code {
+    private IEnumerable<ApplicationResponseDto> applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
+    private Dictionary<string, string> translatedStatuses = new();
+    private string _language;
+    private bool _applicationsLoaded;
+    private bool _isLoading;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender && !_applicationsLoaded)
+        {
+            _applicationsLoaded = true;
+            await FetchApplications();
+        }
+    }
+
+    private async Task FetchApplications()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        applications = await _applicationService.GetAllByCandidateAsync(Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+
+        _language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        _language = _language.Substring(0, 2).ToLower();
+
+        await TranslateAllStatuses();
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task TranslateAllStatuses()
+    {
+        var uniqueStatuses = applications.Select(a => a.ApplicationStatus).Distinct();
+
+        foreach (var status in uniqueStatuses)
+        {
+            translatedStatuses[status] = await TranslationService.TranslateAsync(status, _language);
+        }
+    }
+}
+
