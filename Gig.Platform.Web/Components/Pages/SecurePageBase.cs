@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Security.Claims;
 using Microsoft.JSInterop;
 using Gig.Platform.Web.Interfaces;
+using Gig.Platform.Web.Services.Special_services;
 
 namespace Gig.Platform.Web.Components.Pages
 {
@@ -12,6 +13,7 @@ namespace Gig.Platform.Web.Components.Pages
         [Inject] protected NavigationManager NavigationManager { get; set; }
         [Inject] protected ILocationService LocationService { get; set; }
         [Inject] protected IJSRuntime JSRuntime { get; set; }
+        [Inject] protected TranslationService TranslationService { get; set; }
 
         protected ClaimsPrincipal User { get; private set; }
         private bool _isNavigationHandled;
