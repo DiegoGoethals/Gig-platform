@@ -5,6 +5,7 @@
 
 @inject IChatService _chatService
 @inject IAccountService _accountService
+@inject TranslationService TranslationService
 
 <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
@@ -40,13 +41,13 @@
                 }
             </div>
             <div class="chat-input">
-                <input type="text" @bind="_newMessage.Content" placeholder="Type a message..." />
-                <button @onclick="SendMessageAsync">Send</button>
+                <input type="text" @bind="_newMessage.Content" placeholder="@translatedPlaceholder" />
+                <button @onclick="SendMessageAsync">@translatedSend</button>
             </div>
         }
         else
         {
-            <p>Select a chat to start messaging.</p>
+            <p>@translatedSelectChat</p>
         }
     </div>
 </div>
@@ -61,6 +62,12 @@
     private MessageRequestDto _newMessage = new MessageRequestDto();
     private bool _chatsLoaded;
 
+    private bool _isLoading;
+
+    private string translatedPlaceholder;
+    private string translatedSend;
+    private string translatedSelectChat;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -70,6 +77,8 @@
             _chatsLoaded = true;
 
             await FetchChatPartners();
+
+			await LoadTranslations();
         }
     }
 
@@ -125,4 +134,20 @@
             await FetchMessages();
         }
     }
+
+    private async Task LoadTranslations()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        language = language.Substring(0, 2).ToLower();
+
+		translatedPlaceholder = await TranslationService.TranslateAsync("Type a message...", language);
+		translatedSend = await TranslationService.TranslateAsync("Send", language);
+		translatedSelectChat = await TranslationService.TranslateAsync("Please select a chat.", language);
+
+		_isLoading = false;
+		StateHasChanged();
+	}
 }
