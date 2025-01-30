@@ -3,18 +3,23 @@
 
 @if (Jobs == null || !Jobs.Any())
 {
-	<p>No jobs found</p>
+    <p>@translatedError</p>
 }
 else {
     <ul id="jobs">
         @foreach (var job in Jobs)
         {
-            <JobCard User="User" Job="job" NavigationManager="NavigationManager" LocationService="LocationService" ApplicationService="ApplicationService"/>
+            <JobCard User="User" Job="job" NavigationManager="NavigationManager" LocationService="LocationService" ApplicationService="ApplicationService" TranslationService="TranslationService" JSRuntime="JSRuntime"/>
         }
     </ul>
 }
 
-<button class="btn btn-primary" @onclick="ShowForm">Add new job</button>
+@if (_isLoading)
+{
+	<Loader />
+}
+
+<button class="btn btn-primary" @onclick="ShowForm">@translatedAddJob</button>
 
 <JobForm @ref="jobForm" User="User" OnAddJob="AddJob"/>
 
@@ -24,14 +29,23 @@ else {
     [Parameter]
     public NavigationManager NavigationManager { get; set; }
     [Parameter]
-	public IApplicationService ApplicationService { get; set; }
+    public IApplicationService ApplicationService { get; set; }
+    [Parameter]
+    public TranslationService TranslationService { get; set; }
+    [Parameter]
+    public IJSRuntime JSRuntime { get; set; }
 
     private JobForm jobForm;
 
-	private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
+    private string translatedError;
+    private string translatedAddJob;
 
-	protected override async Task OnInitializedAsync()
-	{
+	private bool _isLoading;
+
+    private IEnumerable<JobResponseDto> Jobs { get; set; } = Enumerable.Empty<JobResponseDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
         try
         {
             if (User?.Claims == null || !User.Claims.Any(c => c.Type.Contains("nameidentifier")))
@@ -47,7 +61,9 @@ else {
             Console.WriteLine($"Error fetching jobs: {ex.Message}");
             Jobs = Enumerable.Empty<JobResponseDto>();
         }
-	}
+
+        await LoadTranslations();
+    }
 
 	private async Task AddJob(JobRequestDto job)
 	{
@@ -65,5 +81,20 @@ else {
     private async Task ShowForm()
     {
         await jobForm.Show();
+    }
+
+    private async Task LoadTranslations()
+    {
+        _isLoading = true;
+		StateHasChanged();
+
+        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        language = language.Substring(0, 2).ToLower();
+
+        translatedError = await TranslationService.TranslateAsync("No jobs found", language);
+        translatedAddJob = await TranslationService.TranslateAsync("Add new job", language);
+
+        _isLoading = false;
+		StateHasChanged();
     }
 }

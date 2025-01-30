@@ -1,18 +1,23 @@
 ﻿<li id="@Job.Id" @onclick="SeeJobDetails">
 	<h3>@Job.Name</h3>
-	<p>Salary: @Job.Salary</p>
-	<p>City: @Job.City</p>
-	<p>Distance: @distance Km</p>
-	<p>@Applications.Count() Applications</p>
+	<p>@translatedSalary: @Job.Salary</p>
+	<p>@translatedCity: @Job.City</p>
+	<p>@translatedDistance: @distance Km</p>
+	<p>@Applications.Count() @translatedApplications</p>
 	@foreach (var skill in Job.Skills)
 	{
 		<p class="job-skill">@skill.Name</p>
 	}
 	@if (hasApplied)
 	{
-		<p class="job-applied">You have already applied to this job</p>
+		<p class="job-applied">@translatedApplied</p>
 	}
 </li>
+
+@if (_isLoading)
+{
+	<Loader />
+}
 
 @code {
 	[Parameter]
@@ -25,6 +30,18 @@
 	public IApplicationService ApplicationService { get; set; }
 	[Parameter]
 	public ClaimsPrincipal User { get; set; }
+	[Parameter]
+	public TranslationService TranslationService { get; set; }
+	[Parameter]
+	public IJSRuntime JSRuntime { get; set; }
+
+	private bool _isLoading;
+
+	private string translatedSalary;
+	private string translatedCity;
+	private string translatedDistance;
+	private string translatedApplications;
+	private string translatedApplied;
 
 	private IEnumerable<ApplicationResponseDto> Applications { get; set; } = Enumerable.Empty<ApplicationResponseDto>();
 
@@ -37,9 +54,28 @@
 		distance = LocationService.GetDistance(Job.Latitude, Job.Longitude);
 		Applications = await ApplicationService.GetAllByJobAsync(Job.Id);
 		hasApplied = Applications.Any(a => a.CandidateId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value));
+		await LoadTranslations();
 	}
 
 	private void SeeJobDetails() {
 		NavigationManager.NavigateTo($"/job/{Job.Id}");
+	}
+
+	private async Task LoadTranslations()
+	{
+		_isLoading = true;
+		StateHasChanged();
+
+		var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+		language = language.Substring(0, 2).ToLower();
+
+		translatedSalary = await TranslationService.TranslateAsync("Salary", language);
+		translatedCity = await TranslationService.TranslateAsync(Job.City, language);
+		translatedDistance = await TranslationService.TranslateAsync("Distance", language);
+		translatedApplications = await TranslationService.TranslateAsync("Applications", language);
+		translatedApplied = await TranslationService.TranslateAsync("You have already applied for this job", language);
+
+		_isLoading = false;
+		StateHasChanged();
 	}
 }

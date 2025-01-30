@@ -8,18 +8,18 @@
 <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
 <div class="job-details">
-    @if (Job == null)
+    @if (Job == null || _isLoading)
     {
-        <p>Loading...</p>
+        <Loader/>
     }
     else
     {
         <h1>@Job.Name</h1>
-        <p>@Job.Description</p>
-        <p>Salary: €@Job.Salary</p>
-        <p>Adress: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
+        <p>@translatedJobDescription</p>
+        <p>@translatedSalaryText: €@Job.Salary</p>
+        <p>@translatedAddressText: @Job.StreetName @Job.HouseNumber, @Job.PostalCode @Job.City</p>
         <p class="job-skills">
-            Skills:
+            @translatedSkillsText:
             @foreach (var skill in Job.Skills)
             {
                 <span>@skill.Name</span>
@@ -30,31 +30,37 @@
 
         @if (role == "Employee" && Application == null)
         {
-            <a href="user/@Job.EmployerId">Employer: @Job.EmployerName</a>
+            <a href="user/@Job.EmployerId">@translatedEmployerText: @Job.EmployerName</a>
             <div>
-                <button class="btn btn-primary" @onclick="Apply">Apply</button>
+                <button class="btn btn-primary" @onclick="Apply">@translatedApplyText</button>
             </div>
         }
-		else if (role == "Employee" && Application != null)
+        else if (role == "Employee" && Application != null)
         {
-            <a href="user/@Job.EmployerId">Employer: @Job.EmployerName</a>
-			<ApplicationCard role="@role" application="Application" applicationStatuses="applicationStatuses"/>
+            <a href="user/@Job.EmployerId">@translatedEmployerText: @Job.EmployerName</a>
+            <ApplicationCard role="@role" 
+                application="Application" 
+                applicationStatuses="applicationStatuses" 
+                TranslationService="TranslationService"
+                JSRuntime="JSRuntime" />
         }
         else
         {
-            <button @onclick="ShowForm">Edit job details</button>
-            <button class="btn btn-danger" @onclick="DeleteJob">Delete job</button>
+            <button @onclick="ShowForm">@translatedEditJobText</button>
+            <button class="btn btn-danger" @onclick="DeleteJob">@translatedDeleteJobText</button>
             <ul>
                 @foreach (var application in Applications)
                 {
                     <ApplicationCard application="application"
-                        role="@role"
+                    role="@role"
                     applicationStatuses="applicationStatuses"
-                    OnHandleApplication="HandleApplicationAsync" />
+                    OnHandleApplication="HandleApplicationAsync"
+                    TranslationService="TranslationService"
+                    JSRuntime="JSRuntime" />
                 }
             </ul>
 
-            <JobForm @ref="jobForm" OnEditJob="EditJob" job="Job" User="User"/>
+            <JobForm @ref="jobForm" OnEditJob="EditJob" job="Job" User="User" />
         }
     }
 </div>
@@ -74,6 +80,17 @@
 
     private JobForm jobForm;
 
+    private bool _isLoading;
+
+    private string translatedJobDescription;
+    private string translatedSalaryText;
+    private string translatedAddressText;
+    private string translatedSkillsText;
+    private string translatedEmployerText;
+    private string translatedApplyText;
+    private string translatedEditJobText;
+    private string translatedDeleteJobText;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -92,14 +109,39 @@
                     Applications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
                     applicationStatuses = await ApplicationService.GetAllStatusesAsync();
                 }
-                else {
+                else
+                {
                     var allApplications = await ApplicationService.GetAllByJobAsync(Guid.Parse(JobId));
-					var candidateId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
-					Application = allApplications.FirstOrDefault(a => a.CandidateId == candidateId);
+                    var candidateId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value);
+                    Application = allApplications.FirstOrDefault(a => a.CandidateId == candidateId);
                 }
+
+                await LoadTranslations();
+
                 StateHasChanged();
             }
         }
+    }
+
+    private async Task LoadTranslations()
+    {
+        _isLoading = true;
+		StateHasChanged();
+
+        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        language = language.Substring(0, 2).ToLower();
+
+        translatedJobDescription = await TranslationService.TranslateAsync(Job.Description, language);
+        translatedSalaryText = await TranslationService.TranslateAsync("Salary", language);
+        translatedAddressText = await TranslationService.TranslateAsync("Address", language);
+        translatedSkillsText = await TranslationService.TranslateAsync("Skills", language);
+        translatedEmployerText = await TranslationService.TranslateAsync("Employer", language);
+        translatedApplyText = await TranslationService.TranslateAsync("Apply", language);
+        translatedEditJobText = await TranslationService.TranslateAsync("Edit details", language);
+        translatedDeleteJobText = await TranslationService.TranslateAsync("Delete job", language);
+
+        _isLoading = false;
+        StateHasChanged();
     }
 
     private async Task ShowForm()
@@ -113,7 +155,8 @@
         {
             await JobService.UpdateJobAsync(Guid.Parse(JobId), job);
             Job = await JobService.GetJobByIdAsync(Guid.Parse(JobId));
-			StateHasChanged();
+            await LoadTranslations();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
@@ -123,18 +166,18 @@
 
     private async Task DeleteJob()
     {
-		await JobService.DeleteJobAsync(Guid.Parse(JobId));
-		NavigationManager.NavigateTo("/");
+        await JobService.DeleteJobAsync(Guid.Parse(JobId));
+        NavigationManager.NavigateTo("/");
     }
 
     private async Task Apply()
     {
-		var dto = new ApplicationRequestDto
-	    {
-			JobId = Job.Id,
-            CandidateId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)
-		};
-		await ApplicationService.ApplyAsync(dto);
+        var dto = new ApplicationRequestDto
+            {
+                JobId = Job.Id,
+                CandidateId = Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)
+            };
+        await ApplicationService.ApplyAsync(dto);
     }
 
     private async Task HandleApplicationAsync((Guid applicationId, ApplicationStatusDto status) args)
