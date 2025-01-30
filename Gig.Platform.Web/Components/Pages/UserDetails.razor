@@ -23,7 +23,7 @@ else
             <div class="user-header">
                 <img src="@userDetails.ProfilePictureUrl" alt="@userDetails.UserName profile picture"/>
                 <h1>@userDetails.UserName</h1>
-                <p class="member-since">Member since: @userDetails.Created.ToString("d")</p>
+                <p class="member-since">@translatedMemberSince: @userDetails.Created.ToString("d")</p>
                 @if (!string.IsNullOrEmpty(userDetails.Bio))
                 {
                     <h3>Bio</h3>
@@ -32,11 +32,11 @@ else
 
                 @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower())
                 {
-                    <a class="btn btn-primary" href="/chat/@UserId">Send Message</a>
+                    <a class="btn btn-primary" href="/chat/@UserId">@translatedSendMessage</a>
                 }
                 else
                 {
-                    <button class="btn btn-primary" @onclick="() => _isEditing = true">Update Profile</button>
+                    <button class="btn btn-primary" @onclick="() => _isEditing = true">@translatedUpdateProfile</button>
                 }
             </div>
 
@@ -71,9 +71,9 @@ else
             }
 
             @if (UserId.ToLower() != User.Claims.First(c => c.Type.Contains("nameidentifier")).Value.ToLower() &&
-        !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
+    !userDetails.Reviews.Any(r => r.ReviewerId == Guid.Parse(User.Claims.First(c => c.Type.Contains("nameidentifier")).Value)))
             {
-                <button class="btn btn-primary" @onclick="AddReview">Add review</button>
+                <button class="btn btn-primary" @onclick="AddReview">@translatedAddReview</button>
             }
 
             <ReviewForm @ref="reviewForm" User="@User" RevieweeId="@UserId" UpdatePage="FetchUserDetails" review="reviewToEdit" ReviewService="ReviewService"/>
@@ -84,7 +84,6 @@ else
 @if (_isLoading) 
 {
     <Loader />
-
 }
 
 @code {
@@ -102,6 +101,11 @@ else
     private bool _isEditing;
     private bool _isLoading;
 
+    private string translatedMemberSince;
+    private string translatedSendMessage;
+    private string translatedUpdateProfile;
+	private string translatedAddReview;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -114,6 +118,8 @@ else
             {
                 await FetchUserDetails();
             }
+
+			await LoadTranslations();
         }
     }
 
@@ -160,5 +166,22 @@ else
     private void ToggleIsEditable()
     {
         _isEditing = !_isEditing;
+    }
+
+    private async Task LoadTranslations()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+        language = language.Substring(0, 2).ToLower();
+
+		translatedMemberSince = await TranslationService.TranslateAsync("Member since", language);
+        translatedSendMessage = await TranslationService.TranslateAsync("Send message", language);
+        translatedUpdateProfile = await TranslationService.TranslateAsync("Update profile", language);
+		translatedAddReview = await TranslationService.TranslateAsync("Add review", language);
+
+        _isLoading = false;
+		StateHasChanged();
     }
 }
