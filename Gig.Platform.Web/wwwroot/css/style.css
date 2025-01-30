@@ -943,7 +943,7 @@ details {
     color: red!important;
 }
 
-.loader {
+#loader {
     width: 100svw;
     height: 100svh;
     background-color: rgba(0, 0, 0, 0.5);
