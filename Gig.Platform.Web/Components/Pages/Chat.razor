@@ -9,6 +9,11 @@
 
 <Header User="User" AuthStateProvider="AuthStateProvider" NavigationManager="NavigationManager" />
 
+@if (_isLoading)
+{
+    <Loader/>
+}
+
 <div class="chat-container">
     <!-- Sidebar: List of chats -->
     <div class="chat-sidebar">

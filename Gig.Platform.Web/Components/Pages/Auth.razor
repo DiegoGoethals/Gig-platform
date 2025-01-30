@@ -1,21 +1,55 @@
 ﻿@page "/auth"
 @rendermode InteractiveServer
 
+@inject TranslationService TranslationService
+@inject IJSRuntime JSRuntime
+
+@if (_isLoading)
+{
+	<Loader/>
+}
+
 @if(IsRegistered)
 {
 	<LoginForm />
-	<p class="register-link" @onclick="ToggleRegistration">Don't have an account yet? Click here to register</p>
+	<p class="register-link" @onclick="ToggleRegistration">@translatedLink</p>
 }
 else
 {
-	<RegistrationForm />
+	<RegistrationForm TranslationService="TranslationService" JSRuntime="JSRuntime"/>
 }
 
 @code {
 	public bool IsRegistered { get; set; } = true;
 
+	private bool _isLoading;
+
+	private string translatedLink;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadTranslations();
+		}
+	}
+
 	public void ToggleRegistration()
 	{
 		IsRegistered = !IsRegistered;
+	}
+
+	private async Task LoadTranslations()
+	{
+		_isLoading = true;
+		StateHasChanged();
+
+		var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+		language = language.Substring(0, 2).ToLower();
+
+		translatedLink = await TranslationService.TranslateAsync("Don't have a profile yet? Click here to register", language);
+
+		_isLoading = false;
+		StateHasChanged();
 	}
 }

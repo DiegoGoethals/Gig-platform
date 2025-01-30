@@ -9,39 +9,42 @@
             <input type="text" class="form-control" id="username" placeholder="Username" required @bind="@Username">
         </div>
         <div class="form-group">
-            <label for="email">Email address</label>
+            <label for="email">@translatedEmail</label>
             <input type="email" class="form-control" id="email" placeholder="Enter email" required @bind="@Email">
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Password" required @bind="@Password">
+            <label for="password">@translatedPassword</label>
+            <input type="password" class="form-control" id="password" placeholder="@translatedPassword" required @bind="@Password">
         </div>
         <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required @bind="@ConfirmPassword">
+            <label for="confirmPassword">@translatedConfirmPassword</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="@translatedConfirmPassword" required @bind="@ConfirmPassword">
         </div>
         <div class="form-group">
-            <label for="firstname">First name</label>
-            <input type="text" class="form-control" id="firstname" placeholder="First name" required @bind="@FirstName">
+            <label for="firstname">@translatedFirstName</label>
+            <input type="text" class="form-control" id="firstname" placeholder="@translatedFirstName" required @bind="@FirstName">
         </div>
         <div class="form-group">
-            <label for="lastname">Last name</label>
-            <input type="text" class="form-control" id="lastname" placeholder="Last name" required @bind="@LastName">
+            <label for="lastname">@translatedLastName</label>
+            <input type="text" class="form-control" id="lastname" placeholder="@translatedLastName" required @bind="@LastName">
         </div>
         <div class="form-group">
             <label for="bio">Bio</label>
-			<textarea class="form-control" id="bio" rows="3" required @bind="@Bio"></textarea>
+            <textarea class="form-control" id="bio" rows="3" required @bind="@Bio"></textarea>
         </div>
         <div class="form-group">
-            <label for="birthday">Birthday</label>
+            <label for="birthday">@translatedBirthday</label>
             <input type="date" class="form-control" id="birthday" required @bind="@Birthday">
         </div>
-        <InputFile OnChange="HandleFileSelected" class="form-control" id="profilePicture" accept="image/*" />
         <div class="form-group">
-            <label for="role">Role</label>
+            <label for="profilePicture">@translatedPicture</label>
+            <InputFile OnChange="HandleFileSelected" class="form-control" id="profilePicture" accept="image/*" />
+        </div>
+        <div class="form-group">
+            <label for="role">@translatedRole</label>
             <select id="role" class="form-control mb-3" required @bind="@Role">
-                <option value="Employer">Employer</option>
-                <option value="Employee">Employee</option>
+                <option value="Employer">@translatedEmployer</option>
+                <option value="Employee">@translatedEmployee</option>
             </select>
         </div>
         @if (Role == "Employee")
@@ -56,19 +59,24 @@
                 </select>
             </div>
         }
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">@translatedRegister</button>
     </form>
 
-	<p>@_errorMessage</p>
+    <p>@_errorMessage</p>
 
-	@if (_isRegistring)
-	{
+    @if (_isRegistring || _isLoading)
+    {
         <Loader/>
-	}
+    }
 
 </div>
 
 @code {
+    [Parameter]
+    public TranslationService TranslationService { get; set; }
+    [Parameter]
+    public IJSRuntime JSRuntime { get; set; }
+
     private IEnumerable<SkillResponseDto> skills = Enumerable.Empty<SkillResponseDto>();
 
     public string Username { get; set; }
@@ -82,16 +90,29 @@
     public List<string> SelectedSkills { get; set; } = new List<string>();
     public byte[] FileData { get; set; }
     public string FileExtension { get; set; }
-	public string Bio { get; set; }
+    public string Bio { get; set; }
 
-	private string _errorMessage;
-
+    private string _errorMessage;
+    private bool _isLoading;
     private bool _isRegistring = false;
 
-	protected override async Task OnInitializedAsync()
-	{
-		skills = await SkillService.GetSkillsAsync();
-	}
+    private string translatedEmail;
+    private string translatedPassword;
+    private string translatedConfirmPassword;
+    private string translatedFirstName;
+    private string translatedLastName;
+    private string translatedBirthday;
+    private string translatedPicture;
+    private string translatedRole;
+    private string translatedEmployer;
+    private string translatedEmployee;
+    private string translatedRegister;
+
+    protected override async Task OnInitializedAsync()
+    {
+        skills = await SkillService.GetSkillsAsync();
+		await LoadTranslations();
+    }
 
     private void HandleSkillsChange(ChangeEventArgs e)
     {
@@ -143,8 +164,8 @@
 
     private void ShowErrorMessage(string message)
     {
-		_errorMessage = message;
-		StateHasChanged();
+        _errorMessage = message;
+        StateHasChanged();
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
@@ -157,5 +178,29 @@
             FileData = stream.ToArray();
             FileExtension = Path.GetExtension(file.Name);
         }
+    }
+
+    private async Task LoadTranslations()
+    {
+        _isLoading = true;
+		StateHasChanged();
+
+		var language = await JSRuntime.InvokeAsync<string>("getBrowserLanguage");
+		language = language.Substring(0, 2).ToLower();
+
+		translatedEmail = await TranslationService.TranslateAsync("Email address", language);
+		translatedPassword = await TranslationService.TranslateAsync("Password", language);
+        translatedConfirmPassword = await TranslationService.TranslateAsync("Confirm Password", language);
+        translatedFirstName = await TranslationService.TranslateAsync("First name", language);
+        translatedLastName = await TranslationService.TranslateAsync("Last name", language);
+		translatedBirthday = await TranslationService.TranslateAsync("Birthday", language);
+		translatedPicture = await TranslationService.TranslateAsync("Profile Picture", language);
+		translatedRole = await TranslationService.TranslateAsync("Role", language);
+        translatedEmployer = await TranslationService.TranslateAsync("Employer", language);
+		translatedEmployee = await TranslationService.TranslateAsync("Employee", language);
+		translatedRegister = await TranslationService.TranslateAsync("Register", language);
+
+        _isLoading = false;
+		StateHasChanged();
     }
 }
